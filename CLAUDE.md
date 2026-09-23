@@ -84,3 +84,8 @@ Before the test: short Vietnamese consent notice (name/phone collection) + requi
 - Script ID: 1NMZYJEpQtem0uWU0pBpGZC5woT3_QqgY6pL5aL9kK_SwcEFIG7yYwUlQ
 - Web app deployment ID (keep stable; update with `clasp redeploy <id>`): AKfycbxxWFiaSBNKrB-hZQNPK5BNsOMDEjGXNlt1eXxuUdaCFUsqg1dBVal6lGbK6CrKLdEOsw
 - After `clasp create`/`clasp pull`, restore apps-script/appsscript.json from git (clasp overwrites it).
+
+## Known platform behaviour (observed 2026-09-23)
+- Apps Script round trips usually take 2–7 s but can take 20–40 s. Google's echo redirect sometimes returns 404 or another request's reply. `docs/js/api.js` handles this with a request id (rid), server-side result cache and retries.
+- Design rule: students never wait on the network mid-test. Submit answers to a background queue (persisted in localStorage) and let the test continue; only the final report waits for pending grades.
+- Every API action must be safe to retry under the same rid (the server caches by rid; never call Gemini twice for one rid).
