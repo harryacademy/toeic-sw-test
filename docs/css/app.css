@@ -1,0 +1,117 @@
+/* Harry Academy brand tokens (from the poster site) */
+:root {
+  --paper: #f5f7f8;
+  --panel: #ffffff;
+  --ink: #101826;
+  --ink-soft: #4b5666;
+  --line: #dfe4e7;
+  --accent: #1aa5be;
+  --accent-ink: #0b6e80;
+  --accent-tint: #e6f5f8;
+  --danger: #c14343;
+  --ok: #2f8a4c;
+  --radius: 10px;
+  --shadow: 0 1px 2px rgba(16,24,38,.06), 0 8px 24px -12px rgba(16,24,38,.18);
+  --font: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Playfair Display', Georgia, serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #12171d;
+    --panel: #1a2028;
+    --ink: #eef1f4;
+    --ink-soft: #a9b3bf;
+    --line: #2a323c;
+    --accent: #3fc3da;
+    --accent-ink: #8fe3f0;
+    --accent-tint: #182b30;
+    --danger: #e07070;
+    --ok: #62c283;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 16px/1.55 var(--font);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+.brand-mark {
+  width: 34px;
+  height: 43px;
+  padding: 3px;
+  border-radius: 6px;
+  background: #fff; /* logo has black strokes; keep a light chip in dark mode */
+}
+.brand-name { font-weight: 700; letter-spacing: .01em; }
+.brand-sub { font-size: 13px; color: var(--ink-soft); }
+
+main {
+  max-width: 720px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+}
+h1 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1.2;
+  margin: 0 0 8px;
+}
+.muted { color: var(--ink-soft); }
+
+.btn {
+  appearance: none;
+  border: 0;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font: 600 16px/1 var(--font);
+  padding: 14px 20px;
+  min-height: 48px;
+  cursor: pointer;
+}
+.btn:hover { filter: brightness(1.05); }
+.btn:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; }
+.btn[disabled] { opacity: .55; cursor: default; }
+@media (prefers-color-scheme: dark) { .btn { color: #0b1a1f; } }
+
+.status {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: var(--accent-tint);
+  font-size: 15px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.status.is-ok { border-left: 4px solid var(--ok); }
+.status.is-error { border-left: 4px solid var(--danger); }
+.status[hidden] { display: none; }
+
+@media (max-width: 480px) {
+  main { margin: 16px auto; }
+  .card { padding: 18px; }
+  h1 { font-size: 24px; }
+  .btn { width: 100%; }
+}
