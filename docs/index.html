@@ -47,6 +47,7 @@
         var t0 = performance.now();
         try {
           var d = await HA_API.call('ping', { note: navigator.userAgent });
+          if (!d || !d.sheet) throw new Error('Phản hồi thiếu dữ liệu.');
           var ms = Math.round(performance.now() - t0);
           show('Kết nối thành công (' + ms + ' ms).\n' +
             'Bảng tính: ' + d.sheet + '\n' +
