@@ -1,6 +1,6 @@
 // Public frontend config. No secrets here — this file is served publicly.
 window.HA_CONFIG = {
   // Apps Script web app URL (ends with /exec). Filled in after `clasp deploy`.
-  API_URL: 'PASTE_WEB_APP_URL_HERE',
+  API_URL: 'https://script.google.com/macros/s/AKfycbxxWFiaSBNKrB-hZQNPK5BNsOMDEjGXNlt1eXxuUdaCFUsqg1dBVal6lGbK6CrKLdEOsw/exec',
   REQUEST_TIMEOUT_MS: 90000
 };

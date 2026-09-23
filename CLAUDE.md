@@ -77,3 +77,10 @@ Before the test: short Vietnamese consent notice (name/phone collection) + requi
 ## Working rules
 - Do not write code for a phase until the owner approves the plan for it.
 - Flag anything unclear, conflicting, or technically unsound before building.
+
+## Deployment IDs
+- Google account: harry@harryacademy.edu.vn (Workspace).
+- Sheet: https://docs.google.com/spreadsheets/d/1m1kmpfmL48LeYwqYHXkR1jbJp0MKg1T7FoXURiieCOs
+- Script ID: 1NMZYJEpQtem0uWU0pBpGZC5woT3_QqgY6pL5aL9kK_SwcEFIG7yYwUlQ
+- Web app deployment ID (keep stable; update with `clasp redeploy <id>`): AKfycbxxWFiaSBNKrB-hZQNPK5BNsOMDEjGXNlt1eXxuUdaCFUsqg1dBVal6lGbK6CrKLdEOsw
+- After `clasp create`/`clasp pull`, restore apps-script/appsscript.json from git (clasp overwrites it).
