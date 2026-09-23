@@ -89,3 +89,17 @@ Before the test: short Vietnamese consent notice (name/phone collection) + requi
 - Apps Script round trips usually take 2–7 s but can take 20–40 s. Google's echo redirect sometimes returns 404 or another request's reply. `docs/js/api.js` handles this with a request id (rid), server-side result cache and retries.
 - Design rule: students never wait on the network mid-test. Submit answers to a background queue (persisted in localStorage) and let the test continue; only the final report waits for pending grades.
 - Every API action must be safe to retry under the same rid (the server caches by rid; never call Gemini twice for one rid).
+
+## Progress (update at the end of every work session)
+- 2026-09-23: Phase 0 DONE and verified by owner (PC 5/5, phone 5/5; retries work; frontend v0.2.0).
+  - Owner has not yet approved the start of Phase 1. Next session: confirm, then build Phase 1 (Writing) per the plan below.
+- Phase 1 plan (proposed to owner):
+  - Consent screen + name/phone, with a temporary test session (real access codes come in Phase 3).
+  - Sample Writing form: 8 Qs, own placeholder images/emails/essay topic.
+  - Timers: Q1–5 shared 8 min with free navigation; Q6–7 10 min each; Q8 30 min.
+  - Background grading queue persisted in localStorage.
+  - Rule check for the two required words (inflections allowed); Gemini structured output.
+  - Q8 graded twice (average + review flag); results written to the Results tab.
+  - Rubrics file with anchor slots; temperature test 1.0 vs 0.2 on owner's anchors.
+- Waiting on owner: 3–5 real student answers per Writing task type with the owner's scores (anonymised), for anchors and the temperature test.
+- Owner is on Windows. clasp is installed on the owner's machine and logged in as harry@harryacademy.edu.vn. Global installs made from Claude's sandbox do NOT reach the owner's machine.
