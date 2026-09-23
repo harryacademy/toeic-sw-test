@@ -62,6 +62,8 @@
     return reply.data;
   }
 
+  const stats = { lastRetries: 0 };
+
   async function call(action, payload, session) {
     const cfg = window.HA_CONFIG;
     if (!cfg.API_URL || cfg.API_URL.indexOf('/exec') === -1) {
@@ -71,6 +73,7 @@
     const body = JSON.stringify({ action, payload: payload || {}, session: session || null, rid });
     let lastErr;
     for (let attempt = 0; attempt <= RETRY_DELAYS_MS.length; attempt++) {
+      stats.lastRetries = attempt;
       try {
         return await once(cfg.API_URL, body, rid, cfg.REQUEST_TIMEOUT_MS);
       } catch (err) {
@@ -86,5 +89,5 @@
     throw lastErr;
   }
 
-  window.HA_API = { call, ApiError };
+  window.HA_API = { call, ApiError, stats };
 })();
