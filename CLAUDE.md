@@ -72,7 +72,7 @@ Before the test: short Vietnamese consent notice (name/phone collection) + requi
 - Final report: estimated 0–200 score per section shown as a 20-point RANGE (e.g. "130–150 (ước tính)"), from an editable raw→range table the owner calibrates, with disclaimer "Điểm ước tính dựa trên bài thi mô phỏng, không phải điểm chính thức của ETS." This replaces the earlier "no scaled scores" rule. No course recommendation for now.
 
 ## Project location
-- Project root: `E:ClaudeSW`. GitHub: https://github.com/harryacademy/toeic-sw-test (public). Pages: https://harryacademy.github.io/toeic-sw-test/ (master, /docs).
+- Project root: `E:/Claude/SW` (Windows: E:\Claude\SW). GitHub: https://github.com/harryacademy/toeic-sw-test (public). Pages: https://harryacademy.github.io/toeic-sw-test/ (master, /docs).
 
 ## Working rules
 - Do not write code for a phase until the owner approves the plan for it.
