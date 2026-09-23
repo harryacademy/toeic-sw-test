@@ -4,14 +4,14 @@ Owner: Harry Academy (English test-prep center, Ho Chi Minh City). Owner is an E
 
 ## Goal
 A prospective student gets a link + one-time access code, takes a simulated TOEIC Speaking & Writing test in the browser, gets AI-estimated scores + feedback, and results go automatically to Google Sheets for consultants.
-This is a practice/placement tool, NOT an official score. Never claim ETS-equivalent scaled scores.
+This is a practice/placement tool, NOT an official score. Scores are shown only as labeled estimates (see Owner decisions).
 
 ## Architecture (decided — do not change without asking the owner)
 - Frontend: static HTML/CSS/vanilla JS on GitHub Pages. No build step, no framework.
 - Backend: Google Apps Script web app bound to the Sheet "HA TOEIC SW Results". Deployed "Execute as: me", "Who has access: Anyone". Code managed with `clasp`.
 - AI: Gemini API called ONLY from Apps Script (UrlFetchApp). Key in Script Properties `GEMINI_API_KEY`. Never in frontend code or the repo.
   - Model ID lives in one config constant. Verified 2026-09-23 on ai.google.dev: current stable Flash is `gemini-3.8-flash` — inputs text/image/video/audio/PDF, structured output supported, thinking levels low/medium/high (no minimal), 1M-token input. Re-check https://ai.google.dev/gemini-api/docs/models before changing.
-  - Google's Gemini 3 guide "strongly recommends" temperature 1.0 for all Gemini 3 models; below 1.0 can cause looping/degraded output. Temperature is a config constant; value pending owner decision.
+  - Google's Gemini 3 guide "strongly recommends" temperature 1.0 for all Gemini 3 models; below 1.0 can cause looping/degraded output. Temperature is a config constant (owner chose 1.0).
   - Use a paid-tier (billing-enabled) Gemini key for real student data — free-tier prompts may be used by Google to improve products.
 - Storage: Google Sheet (tabs: Results, Codes, …) + optional Drive folder for audio (configurable).
 - Frontend → Apps Script: `fetch` POST, `Content-Type: text/plain` (avoids CORS preflight), JSON body; server responds via ContentService JSON. Apps Script redirects to script.googleusercontent.com — fetch must follow redirects.
@@ -33,13 +33,12 @@ Use placeholder audio/images + a sample form during development. NEVER use offic
 ## Scoring pipeline
 - Grade each question as soon as it is submitted (not whole test at once).
 - Gemini structured output returning: transcript (speaking), score, criteria breakdown, errors[], feedback_vi (Vietnamese, full diacritics), band_note.
-- Low temperature was requested (0–0.2) — see open question in plan about Gemini 3 guidance recommending 1.0.
 - Rubrics in a separate editable file, based on official TOEIC S&W scoring criteria, with slots for few-shot anchor samples scored by the owner.
 - Rule-based checks in code:
   - Speaking Q1–2: WER / word accuracy of transcript vs reference text computed in code; Gemini only comments on pronunciation, intonation, stress.
   - Writing Q1–5: code checks both required words are used (inflected forms allowed).
 - Speaking Q11 and Writing Q8: grade twice; if scores differ by ≥1 → average + flag "needs teacher review".
-- Final report: raw section totals → estimated level via editable mapping table, labeled "ước tính".
+- Final report: raw section totals → estimated 0–200 range via editable mapping table, labeled "ước tính" (see Owner decisions).
 
 ## Audio
 - Record in browser, encode 16 kHz mono WAV client-side (no ffmpeg in Apps Script). Must work on Chrome desktop/Android and Safari iOS.
