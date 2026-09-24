@@ -56,12 +56,17 @@ function runTemperatureTest() {
   return summary;
 }
 
-/** Editor check: grades one sample e-mail answer and logs the result. Uses 1 Gemini call. */
-function testGradeOnce() {
+/**
+ * Editor check: grades one sample e-mail answer SAMPLE_RUNS times in parallel and logs the result.
+ * grade_runs shows every score, so you can see how stable the grader is. Uses SAMPLE_RUNS Gemini calls.
+ */
+var SAMPLE_RUNS = 3;
+
+function testGradeSample() {
   var q = FORMS['W-SAMPLE-01'].steps[1].questions[0];
   var answer = 'Dear Members Desk,\n\nI am interested in the yoga class. Is the class suitable for people who never do yoga before? ' +
     'And how much it cost for one month? I work in an office until 6 p.m., so the evening time is good for me.\n\nBest regards,\nNam';
-  var g = gradeQuestion_('email', q, answer, {});
+  var g = gradeQuestion_('email', q, answer, { runs: SAMPLE_RUNS });
   Logger.log(JSON.stringify(g, null, 2));
-  return g.score;
+  return g.grade_runs;
 }

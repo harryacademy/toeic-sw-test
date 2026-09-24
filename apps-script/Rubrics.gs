@@ -30,7 +30,8 @@ var RUBRICS = {
       '1 — Seriously flawed: completes NONE of the required tasks, though some content may relate to the e-mail. Connections missing or obscure; tone may be inappropriate; frequent errors obscure meaning most of the time.',
       '0 — Only copies words from the prompt, rejects or ignores the topic, is not written in English, is random keystrokes, or is blank.'
     ],
-    notes: 'Count each required task explicitly (how many questions, suggestions, pieces of information). A task counts as done only if the reader would get what was asked for. Raters do not expect perfection: a response that completes every task with a few isolated errors can reach 4.'
+    notes: 'Count each required task explicitly (how many questions, suggestions, pieces of information). A task counts as done only if the reader would get what was asked for. Raters do not expect perfection: isolated small errors do not stop a 4. ' +
+      'HOUSE STANDARD (Harry Academy head teacher): 4 requires the tasks to be done EFFECTIVELY — each task is developed with a reason, detail or context, and the sentences are connected into a real e-mail. A bare-minimum reply (one short plain sentence per task, no development) scores at most 3, even with few errors. Organization in a very short reply is at most fair.'
   },
   essay: {
     criteria: ['Opinion and support (reasons, examples, details)', 'Organization, unity and coherence', 'Grammar and sentence variety', 'Vocabulary and idiomatic use'],

@@ -75,7 +75,7 @@ Nếu phiên bản mới thêm cột hoặc tab, mở Sheet và chọn lại **H
 ## Kiểm tra chấm điểm
 Trong trình soạn thảo Apps Script, chọn hàm rồi bấm **Run**, xem kết quả ở **Execution log**:
 - `testRequiredWords`: kiểm tra bộ nhận diện hai từ bắt buộc (câu 1–5). Không tốn lượt Gemini.
-- `testGradeOnce`: chấm thử một bài e-mail mẫu. Tốn 1 lượt Gemini.
+- `testGradeSample` (file `TempTest.gs`): chấm thử một bài e-mail mẫu 3 lần cùng lúc để xem AI chấm có ổn định không. Tốn 3 lượt Gemini. Đổi số lần ở dòng `SAMPLE_RUNS`.
 
 ## Nội dung riêng tư: đề thi thật và bài anchor
 Repo GitHub là **công khai**. Vì vậy:
