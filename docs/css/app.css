@@ -182,7 +182,7 @@ p { margin: 0 0 12px; }
 .progress { height: 8px; background: var(--accent-tint); border-radius: 4px; overflow: hidden; margin: 16px 0 8px; }
 .progress div { height: 100%; background: var(--accent); transition: width .4s; }
 
-.total { font-size: 18px; }
+.plan.summary td:last-child { color: var(--accent-ink); font-weight: 700; }
 .result { border-top: 1px solid var(--line); padding: 16px 0; }
 .result header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
 .result h3 { margin: 0 0 8px; font-size: 17px; }

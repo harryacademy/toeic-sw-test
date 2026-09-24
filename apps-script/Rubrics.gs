@@ -2,68 +2,52 @@
  * Rubrics and anchor samples for the AI grader. The owner edits this file.
  *
  * RUBRICS: level descriptors per task type, paraphrasing the official TOEIC Writing scoring criteria.
- * ANCHORS: real student answers scored by the owner (anonymised). They are shown to the grader as
- *          calibration examples, and runTemperatureTest() uses them to measure AI vs owner agreement.
+ * ANCHORS: real student answers scored by the owner (anonymised), defined in PrivateAnchors.gs.
+ *          They are shown to the grader as calibration examples, and runTemperatureTest() uses them
+ *          to measure AI vs owner agreement.
+ * Level descriptors are our own wording of the TOEIC Writing scoring guides; do not paste ETS text here.
  */
 
 var MAX_SCORE = { picture_sentence: 3, email: 4, essay: 5 };
 
 var RUBRICS = {
   picture_sentence: {
-    criteria: ['Grammar', 'Relevance to the picture', 'Use of both required words'],
+    criteria: ['Grammar', 'Relevance to the picture', 'Use of both key words'],
     levels: [
-      '3 — ONE sentence that uses both required words appropriately, is relevant to the picture, and has no grammatical errors.',
-      '2 — One or more sentences that use both required words and are relevant to the picture, with one or more grammatical errors that do not obscure the meaning.',
-      '1 — Errors that interfere with meaning; OR only one of the required words is used, or a word is used inappropriately; OR the sentence is not consistent with the picture.',
-      '0 — No answer, not written in English, unrelated to the task, or consists only of the given words / random characters.'
+      '3 — ONE sentence with no grammatical errors, using forms of both key words appropriately, and consistent with the picture.',
+      '2 — One or more sentences with one or more grammatical errors that do not obscure the meaning; both key words are present (possibly in different sentences, possibly in an inaccurate form); consistent with the picture.',
+      '1 — Errors that interfere with meaning; OR one or both key words are missing; OR the sentence is not consistent with the picture.',
+      '0 — Only for a blank answer, an answer not written in English, or random keystrokes. An English sentence that does not match the picture is 1, not 0.'
     ],
-    notes: 'The words may appear in any order, and their form may change (plural, tense, -ing, etc.). A second sentence is not needed; writing more than one sentence cannot earn 3.'
+    notes: 'The key words may appear in any order and in any form (plural, tense, -ing, etc.). Minor spelling mistakes are not penalized. Register and formality are not assessed in this task (informal words such as "guys" are acceptable). Writing more than one sentence cannot earn 3.'
   },
   email: {
-    criteria: ['Task completion', 'Organization and tone', 'Sentence quality and variety', 'Vocabulary'],
+    criteria: ['Task completion', 'Organization and connecting words', 'Tone and awareness of the reader', 'Grammar, sentence variety and vocabulary'],
     levels: [
-      '4 — Completes all the tasks effectively; clear, well-organized, and uses a tone and register suitable for the reader; varied sentences with at most a few minor errors.',
-      '3 — Completes all the tasks, but one may be addressed only partly or unclearly; generally organized, with some weaknesses in connection or tone; noticeable errors that do not obscure meaning.',
-      '2 — Several weaknesses: addresses only some of the tasks, OR ideas are poorly connected, OR the tone is inappropriate for the reader, OR errors sometimes obscure meaning.',
-      '1 — Serious disorganization or little relevant content; most tasks missing; frequent errors that obscure meaning; OR mostly copied from the e-mail.',
-      '0 — No answer, only copies the prompt, unrelated to the task, or not written in English.'
+      '4 — Addresses ALL the required tasks effectively, in several sentences that clearly give the requested information / questions / suggestions. Ideas are connected logically or with suitable connecting words. Tone and register suit the reader. Only a few isolated errors, none of which obscure meaning.',
+      '3 — Mostly successful, but falls short on exactly ONE required task (missing, unsuccessful or incomplete). Some organization or connecting words in at least part of the response. Some awareness of the reader. Noticeable errors may be present; at most ONE sentence has errors that obscure meaning.',
+      '2 — Several weaknesses: completes only ONE required task, OR two or three tasks are done unsuccessfully or incompletely. Connections between ideas may be missing or unclear. Little awareness of the reader. Errors obscure meaning in MORE THAN ONE sentence.',
+      '1 — Seriously flawed: completes NONE of the required tasks, though some content may relate to the e-mail. Connections missing or obscure; tone may be inappropriate; frequent errors obscure meaning most of the time.',
+      '0 — Only copies words from the prompt, rejects or ignores the topic, is not written in English, is random keystrokes, or is blank.'
     ],
-    notes: 'Check each required task explicitly (count the questions, suggestions, pieces of information). A task done only vaguely counts as partly done.'
+    notes: 'Count each required task explicitly (how many questions, suggestions, pieces of information). A task counts as done only if the reader would get what was asked for. Raters do not expect perfection: a response that completes every task with a few isolated errors can reach 4.'
   },
   essay: {
-    criteria: ['Opinion and development (reasons and examples)', 'Organization and coherence', 'Grammar and sentence variety', 'Vocabulary and idiomatic use'],
+    criteria: ['Opinion and support (reasons, examples, details)', 'Organization, unity and coherence', 'Grammar and sentence variety', 'Vocabulary and idiomatic use'],
     levels: [
-      '5 — Clearly states an opinion and supports it with well-chosen reasons and examples; well organized, with unity, progression and coherence; varied sentence structures, appropriate word choice and idiomatic language; only minor errors.',
-      '4 — Clear opinion, generally well organized and developed, though some points are not fully explained; good range with occasional errors in structure, word form or idiom that do not obscure meaning.',
-      '3 — Opinion is supported somewhat, but explanations or examples are limited or partly unclear; connections between ideas are sometimes hard to follow; limited range, and accumulated errors that occasionally obscure meaning.',
-      '2 — Limited development; inadequate organization or connection of ideas; few or unsuitable examples; frequent errors in structure and word choice.',
-      '1 — Seriously disorganized or underdeveloped; little or no detail, or irrelevant specifics; serious and frequent errors.',
-      '0 — No answer, only copies the topic, unrelated to the topic, not written in English, or random characters.'
+      '5 — Does nearly all of these: answers the question fully and effectively; clear structure with well-chosen reasons, examples or details that are properly developed; ideas hang together and move forward logically; consistently strong control of language (varied sentences, precise and natural word choice), with at most small slips in words or grammar.',
+      '4 — Does nearly all of these: answers the question well, though some points could be explained further; mostly well structured with enough support; ideas generally connected, though there may be some repetition, a short digression or an unclear link; good range of sentences and vocabulary, with some noticeable small errors that do not affect meaning.',
+      '3 — Shows one or more of these: reasons and examples are only partly developed; the link between ideas is sometimes unclear; uneven control of sentences and word choice that sometimes makes meaning unclear; mostly correct language but a narrow range of structures and vocabulary.',
+      '2 — Shows one or more of these: little development of the answer; weak structure or poorly linked ideas; too few or unsuitable examples and explanations; clearly wrong word choices or word forms; many errors in sentence structure or usage.',
+      '1 — Seriously weak in one or more of these ways: very disorganized or barely developed; little or no detail, or details that are off the point; hardly answers the question; serious and frequent errors in sentence structure or usage.',
+      '0 — Only copies words from the topic, rejects or ignores the topic, is not written in English, is random keystrokes, or is blank.'
     ],
-    notes: 'About 300 words is a guide for an effective answer. Length alone does not earn a score: a long essay with weak development or many errors still scores low; a short essay cannot show full development.'
+    notes: 'An effective essay usually has at least 300 words and several paragraphs, but length alone does not earn a score: judge development, organization and language. Raters do not expect perfection; high scores may contain occasional minor errors.'
   }
 };
 
-/**
- * Anchor samples. Add one object per scored answer. `question` has the same shape as a question in a
- * Form*.gs file (including `grading`), so the grader sees the same task as a student would.
- *
- * Example:
- * {
- *   id: 'A-EMAIL-01',
- *   type: 'email',
- *   question: {
- *     email: { from: 'Members Desk', to: 'Members', subject: 'New evening classes', body: '...' },
- *     task: 'Ask TWO questions and give ONE piece of information about yourself.',
- *     grading: { tasks: ['ask two questions', 'give one piece of information'] }
- *   },
- *   response: 'Dear Members Desk, ...',
- *   owner_score: 3,
- *   owner_note: 'Both questions clear, but the personal information is missing an explanation.'
- * }
- */
-var ANCHORS = [
-];
+// Anchor samples live in PrivateAnchors.gs (not in git; see PrivateAnchors.example.txt).
+var ANCHORS = ANCHORS || [];
 
 /** Anchors with an owner score, for one task type. excludeId skips one (used by the temperature test). */
 function anchorsFor_(type, excludeId) {

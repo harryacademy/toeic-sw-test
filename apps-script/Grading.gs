@@ -129,7 +129,7 @@ function taskParts_(type, q, rule, textOnly) {
   if (type === 'email') {
     var e = q.email || {};
     return [{
-      text: 'Task: reply to this e-mail.\nFrom: ' + e.from + '\nTo: ' + e.to + '\nSubject: ' + e.subject + '\n\n' + e.body +
+      text: 'Task: reply to this e-mail.\nFrom: ' + e.from + '\nTo: ' + e.to + '\nSubject: ' + e.subject + (e.sent ? '\nSent: ' + e.sent : '') + '\n\n' + e.body +
         '\n\nDirections given to the student: ' + q.task +
         (g.tasks && g.tasks.length ? '\nRequired tasks to check: ' + g.tasks.join('; ') : '')
     }];

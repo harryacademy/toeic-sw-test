@@ -77,25 +77,37 @@ Trong trình soạn thảo Apps Script, chọn hàm rồi bấm **Run**, xem k�
 - `testRequiredWords`: kiểm tra bộ nhận diện hai từ bắt buộc (câu 1–5). Không tốn lượt Gemini.
 - `testGradeOnce`: chấm thử một bài e-mail mẫu. Tốn 1 lượt Gemini.
 
-## Thêm đề thi mới
-Mỗi đề là một file `apps-script/Form<Tên>.gs`. Cách nhanh nhất: sao chép `FormWritingSample01.gs`, rồi:
-1. Đổi mã đề ở cả hai chỗ: `FORMS['MÃ-ĐỀ']` và `id: 'MÃ-ĐỀ'`.
-2. Sửa nội dung từng câu. Mỗi *step* là một màn hình có giờ riêng (`time_sec`, tính bằng giây).
-   - Câu 1–5 (`picture_sentence`): `image` (đường dẫn ảnh), `words` (hai từ bắt buộc), `grading.image_description` (mô tả ảnh cho AI, học viên không thấy).
-   - Câu 6–7 (`email`): `email` (from, to, subject, body), `task` (yêu cầu cho học viên), `grading.tasks` (danh sách việc AI cần kiểm tra).
-   - Câu 8 (`essay`): `prompt`.
-3. Ảnh đặt trong `docs/m/q7r2k9xw/` (hoặc một thư mục có tên khó đoán khác). Dùng ảnh `.jpg`, `.png` hoặc `.webp` để AI được xem ảnh thật; với `.svg` AI chỉ đọc phần mô tả.
-4. Đặt đề đang dùng trong `apps-script/Config.gs`: `ACTIVE_FORM: 'MÃ-ĐỀ'`.
-5. `clasp push -f`, `clasp redeploy ...`, rồi đẩy `docs/` lên GitHub.
+## Nội dung riêng tư: đề thi thật và bài anchor
+Repo GitHub là **công khai**. Vì vậy:
+- Đề thi thật và bài anchor nằm trong các file tên bắt đầu bằng `Private` trong thư mục `apps-script/`, ví dụ `PrivateFormW02.gs`, `PrivateAnchors.gs`.
+- Git **bỏ qua** các file này (khai báo trong `.gitignore`), nên chúng không bao giờ lên GitHub. `clasp push` vẫn đưa chúng lên Apps Script bình thường.
+- Vì không có trên GitHub, **anh tự sao lưu** các file `Private*.gs`, ví dụ chép vào một thư mục Google Drive riêng mỗi khi sửa.
+- `FormWritingSample01.gs` là đề mẫu tự soạn, được để công khai làm khuôn.
+- Không đưa nội dung đề thi hay bài mẫu của ETS vào bất kỳ file nào.
 
-Mọi nội dung trong mục `grading` chỉ nằm trên máy chủ, không gửi về trình duyệt. Không dùng đề thi chính thức của ETS.
+## Thêm đề thi mới
+1. Sao chép `apps-script/FormWritingSample01.gs` thành `apps-script/PrivateForm<Tên>.gs`, ví dụ `PrivateFormW02.gs`.
+2. Đổi mã đề ở cả hai chỗ: `FORMS['MÃ-ĐỀ']` và `id: 'MÃ-ĐỀ'`.
+3. Sửa nội dung từng câu. Mỗi *step* là một màn hình có giờ riêng (`time_sec`, tính bằng giây).
+   - Câu 1–5 (`picture_sentence`): `image` (đường dẫn ảnh), `words` (hai từ bắt buộc), `grading.image_description` (mô tả ảnh cho AI, học viên không thấy).
+   - Câu 6–7 (`email`): `email` (from, to, subject, sent, body), `task` (yêu cầu cho học viên), `grading.tasks` (danh sách việc AI cần kiểm tra).
+   - Câu 8 (`essay`): `prompt`.
+4. Ảnh đặt trong `docs/m/q7r2k9xw/` (hoặc một thư mục có tên khó đoán khác). Dùng ảnh `.jpg`, `.png` hoặc `.webp` để AI được xem ảnh thật; với `.svg` AI chỉ đọc phần mô tả. Lưu ý: ảnh trong `docs/` vẫn công khai trên GitHub.
+5. Đặt đề đang dùng trong `apps-script/Config.gs`: `ACTIVE_FORM: 'MÃ-ĐỀ'`.
+6. `clasp push -f`, `clasp redeploy ...`, rồi `git push` (để cập nhật `Config.gs` và ảnh).
+
+Mọi nội dung trong mục `grading` chỉ nằm trên máy chủ, không gửi về trình duyệt.
 
 ## Bài mẫu chấm chuẩn (anchor) và thử nghiệm nhiệt độ
-Trong `apps-script/Rubrics.gs`:
-- `RUBRICS`: thang điểm cho từng dạng câu. Có thể chỉnh câu chữ.
-- `ANCHORS`: bài làm thật của học viên (đã ẩn danh) kèm điểm do giáo viên chấm. AI dùng các bài này để chấm theo chuẩn của trung tâm. Cách điền có ví dụ ngay trong file.
+- `apps-script/Rubrics.gs`: thang điểm cho từng dạng câu (diễn đạt lại theo thang điểm TOEIC Writing, không chép nguyên văn). Có thể chỉnh câu chữ.
+- `apps-script/PrivateAnchors.gs`: bài làm thật của học viên (đã ẩn danh) kèm điểm và ghi chú của giáo viên. AI dùng các bài này để chấm theo chuẩn của trung tâm. Lần đầu, sao chép `PrivateAnchors.example.txt` thành `PrivateAnchors.gs` rồi sửa theo hướng dẫn trong file. Nhớ **xóa các ví dụ mẫu** trong file trước khi `clasp push`.
 
 Sau khi có anchor, chọn **HA TOEIC → Chạy thử nghiệm nhiệt độ** trong Sheet. Mỗi anchor được chấm nhiều lần ở nhiệt độ 1.0 và 0.2 (anchor đang chấm được loại khỏi phần ví dụ). Kết quả chi tiết ở tab `TempTest`, tóm tắt (tỉ lệ trùng điểm, sai số trung bình) ở tab `Log`.
+
+## Đọc kết quả
+- Trang kết quả và cột `writing_raw` trong tab `Sessions` hiện điểm **theo nhóm câu**, ví dụ `Q1-5 TB 2.4/3 | Q6-7 3, 2 /4 | Q8 3/5`. Không cộng thành một tổng, vì ETS tính trọng số: câu 8 nặng nhất, câu 1–5 nhẹ nhất.
+- Khoảng điểm ước tính 0–200 sẽ có ở Giai đoạn 3.
+- Cột `review_flag` trong tab `Results` khác trống nghĩa là câu đó cần giáo viên xem lại.
 
 ## Tạo mã truy cập
 *(Hoàn thiện ở Giai đoạn 3.)*

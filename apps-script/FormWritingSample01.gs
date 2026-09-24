@@ -49,6 +49,7 @@ FORMS['W-SAMPLE-01'] = {
             from: 'Members Desk, Riverside Fitness Center',
             to: 'Valued members',
             subject: 'New evening classes',
+            sent: 'October 2, 9:05 A.M.',
             body: 'Dear members,\n\nStarting next month, Riverside Fitness Center will offer three new evening classes: yoga, indoor cycling, and a beginner strength course. Classes run from 6:30 to 8:00 p.m. on weekdays, and spaces are limited. If you are interested, please reply to this e-mail and let us know which class suits you.\n\nBest regards,\nMembers Desk'
           },
           task: 'Respond to the e-mail as a member of the fitness center. In your e-mail, ask TWO questions and give ONE piece of information about yourself.',
@@ -68,6 +69,7 @@ FORMS['W-SAMPLE-01'] = {
             from: 'Linh Tran, Human Resources',
             to: 'All staff',
             subject: 'Company trip in November',
+            sent: 'October 3, 2:40 P.M.',
             body: 'Hello everyone,\n\nWe are planning a two-day company trip for all staff in November. We have not chosen the destination or the activities yet, and we would like to hear your ideas before we make a booking. Please send me your thoughts by Friday.\n\nThank you,\nLinh'
           },
           task: 'Respond to the e-mail as an employee of the company. In your e-mail, make TWO suggestions and ask ONE question.',

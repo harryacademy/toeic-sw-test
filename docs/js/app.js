@@ -224,7 +224,7 @@
       const m = q.email;
       body = `
         <article class="email">
-          <dl><dt>From:</dt><dd>${esc(m.from)}</dd><dt>To:</dt><dd>${esc(m.to)}</dd><dt>Subject:</dt><dd>${esc(m.subject)}</dd></dl>
+          <dl><dt>From:</dt><dd>${esc(m.from)}</dd><dt>To:</dt><dd>${esc(m.to)}</dd><dt>Subject:</dt><dd>${esc(m.subject)}</dd>${m.sent ? `<dt>Sent:</dt><dd>${esc(m.sent)}</dd>` : ''}</dl>
           <div class="email-body">${esc(m.body)}</div>
         </article>
         <p class="directions"><strong>Directions:</strong> ${esc(q.task)}</p>`;
@@ -358,10 +358,19 @@
           ${it.review_flag ? '<p class="flag">Câu này sẽ được giáo viên xem lại.</p>' : ''}
         </article>`;
     }).join('');
+    const num = (x) => String(x).replace('.', ',');
+    const groupRows = (r.groups || []).map((g) => {
+      const label = g.label.replace(/^Q/, 'Câu ').replace('-', '–');
+      const shown = g.scores.map((x) => (x === null ? '–' : num(x)));
+      const value = g.scores.length > 2
+        ? (g.avg === null ? '–' : 'Trung bình ' + num(g.avg)) + ' / ' + g.max
+        : shown.join(' và ') + ' / ' + g.max;
+      return `<tr><td>${esc(label)}</td><td>${esc(value)}</td></tr>`;
+    }).join('');
     app.innerHTML = `
       <section class="card">
         <h1>Kết quả phần Writing</h1>
-        <p class="total">Tổng điểm thô: <strong>${esc(r.raw)} / ${esc(r.max)}</strong></p>
+        <table class="plan summary">${groupRows}</table>
         <p class="muted small">Điểm ước tính dựa trên bài thi mô phỏng, không phải điểm chính thức của ETS. Tư vấn viên của Harry Academy sẽ liên hệ để giải thích kết quả.</p>
         ${items}
         <button class="btn btn-ghost" type="button" id="new">Làm bài mới</button>

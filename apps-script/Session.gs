@@ -91,26 +91,50 @@ function actionFinishTest_(payload, req) {
     rows[r.obj.question_id] = r.obj;
   });
 
-  var raw = 0, max = 0, items = [];
+  // Scores are reported per question type, not as one sum: ETS weights the harder types more,
+  // so a plain total would overstate Q1–5. The 0–200 estimate (Phase 3) is built from these groups.
+  var items = [], groups = [], byType = {};
   form.steps.forEach(function (step) {
+    var g = byType[step.type];
+    if (!g) {
+      g = byType[step.type] = { type: step.type, first: null, last: null, scores: [], max: MAX_SCORE[step.type] };
+      groups.push(g);
+    }
     step.questions.forEach(function (q) {
-      max += MAX_SCORE[step.type];
+      var n = q.id.replace(/^\D+/, '');
+      if (g.first === null) g.first = n;
+      g.last = n;
       var r = rows[q.id];
       if (r && r.ai_score !== '') {
-        raw += Number(r.ai_score);
-        items.push(resultFromRow_(r));
+        var item = resultFromRow_(r);
+        item.type = step.type;
+        items.push(item);
+        g.scores.push(item.ai_score);
       } else {
-        items.push({ question_id: q.id, ai_score: null, max_score: MAX_SCORE[step.type], missing: true });
+        items.push({ question_id: q.id, type: step.type, ai_score: null, max_score: MAX_SCORE[step.type], missing: true });
+        g.scores.push(null);
       }
     });
   });
+  groups.forEach(function (g) {
+    var got = g.scores.filter(function (x) { return x !== null; });
+    g.label = g.first === g.last ? 'Q' + g.first : 'Q' + g.first + '-' + g.last;
+    g.avg = got.length ? Math.round(10 * got.reduce(function (a, b) { return a + b; }, 0) / got.length) / 10 : null;
+    delete g.first;
+    delete g.last;
+  });
+  // e.g. "Q1-5 TB 2.4/3 | Q6-7 3, 2 /4 | Q8 3.5/5"
+  var summary = groups.map(function (g) {
+    var shown = g.scores.map(function (x) { return x === null ? '-' : x; });
+    return g.label + ' ' + (g.scores.length > 2 ? 'TB ' + g.avg + '/' + g.max : shown.join(', ') + ' /' + g.max);
+  }).join(' | ');
 
   var col = form.section === 'speaking' ? 'speaking_raw' : 'writing_raw';
   var update = { completed_at: new Date(), status: 'completed' };
-  update[col] = raw;
+  update[col] = summary;
   updateCells_(CONFIG.TABS.SESSIONS, s.row, update);
-  log_('finishTest', s.session_id + ' ' + col + '=' + raw + '/' + max);
-  return { section: form.section, raw: raw, max: max, items: items };
+  log_('finishTest', s.session_id + ' ' + summary);
+  return { section: form.section, groups: groups, items: items };
 }
 
 function resultFromRow_(r) {

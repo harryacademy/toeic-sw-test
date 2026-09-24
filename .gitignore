@@ -4,3 +4,6 @@ node_modules/
 .env
 .DS_Store
 Thumbs.db
+
+# Real test forms and anchor samples: pushed to Apps Script by clasp, never to GitHub.
+apps-script/Private*.gs

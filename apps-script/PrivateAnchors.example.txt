@@ -1,0 +1,49 @@
+// TEMPLATE. Copy this file to PrivateAnchors.gs in the same folder, then add your anchors.
+//
+// PrivateAnchors.gs is ignored by git (never goes to GitHub), but `clasp push` uploads it to
+// Apps Script. Keep your own backup copy (e.g. in Google Drive).
+//
+// One object per anonymised student answer that you have scored yourself.
+//   id          unique name, e.g. 'A-EMAIL-01'
+//   type        'picture_sentence' | 'email' | 'essay'
+//   question    the task, same shape as a question in a Form*.gs file (including `grading`)
+//   response    the student's answer, exactly as written (keep their errors)
+//   owner_score your score
+//   owner_note  one or two sentences: why this score and not one higher/lower
+
+var ANCHORS = ANCHORS || [];
+
+ANCHORS.push(
+  {
+    id: 'A-EMAIL-01',
+    type: 'email',
+    question: {
+      email: { from: 'Members Desk', to: 'Members', subject: 'New evening classes', sent: 'October 2, 9:05 A.M.',
+        body: 'Starting next month we will offer three new evening classes... Please reply and tell us which class suits you.' },
+      task: 'Ask TWO questions and give ONE piece of information about yourself.',
+      grading: { tasks: ['ask two questions', 'give one piece of information about themself'] }
+    },
+    response: 'Dear Members Desk, ...',
+    owner_score: 3,
+    owner_note: 'All tasks done, but very short and simple; two basic grammar errors.'
+  },
+  {
+    id: 'A-PIC-01',
+    type: 'picture_sentence',
+    question: {
+      words: ['ride', 'along'],
+      grading: { image_description: 'A man rides a bicycle on a path beside a river.' }
+    },
+    response: 'The man ride his bike along river.',
+    owner_score: 2,
+    owner_note: 'Both words used and matches the picture; agreement and article errors do not obscure meaning.'
+  },
+  {
+    id: 'A-ESSAY-01',
+    type: 'essay',
+    question: { prompt: 'Some people believe that ... Do you agree or disagree? ...' },
+    response: '...',
+    owner_score: 3,
+    owner_note: '...'
+  }
+);
