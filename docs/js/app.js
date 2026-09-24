@@ -116,14 +116,14 @@
     app.innerHTML = `
       <section class="card">
         <h1>Thi thử TOEIC Writing</h1>
-        <p class="muted">Bài thi mô phỏng gồm 8 câu, khoảng 60 phút. Kết quả là điểm ước tính do AI chấm, không phải điểm chính thức của ETS.</p>
+        <p class="muted">Bài thi mô phỏng gồm 8 câu, khoảng 60 phút. Kết quả là điểm ước tính, không phải điểm chính thức của ETS.</p>
         <form id="f" class="form" novalidate>
           <label>Họ và tên<input name="full_name" autocomplete="name" required maxlength="80"></label>
           <label>Số điện thoại<input name="phone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="15"></label>
           <label>Mã truy cập<input name="access_code" autocomplete="off" autocapitalize="characters" required maxlength="40"></label>
           <div class="notice">
             <strong>Thông báo thu thập thông tin</strong>
-            <p>Harry Academy lưu họ tên, số điện thoại và bài làm của bạn để chấm điểm và tư vấn lộ trình học. Thông tin chỉ dùng nội bộ, không chia sẻ cho bên thứ ba. Bài làm được gửi đến dịch vụ AI của Google (Gemini) để chấm.</p>
+            <p>Harry Academy lưu họ tên, số điện thoại và bài làm của bạn để chấm điểm và tư vấn lộ trình học. Họ tên và số điện thoại chỉ dùng nội bộ, không chia sẻ cho bên thứ ba. Bài làm (không kèm thông tin cá nhân) được chấm bằng hệ thống chấm điểm tự động.</p>
             <label class="check"><input type="checkbox" name="consent" required> Tôi đã đọc và đồng ý.</label>
           </div>
           <button class="btn" type="submit">Bắt đầu</button>
