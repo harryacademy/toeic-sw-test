@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500"><title>Office workers in a meeting looking at a chart</title>
+<rect width="800" height="500" fill="#eef1f4"/><rect y="400" width="800" height="100" fill="#c9ced6"/>
+<rect x="470" y="60" width="280" height="180" rx="6" fill="#fff" stroke="#8a94a3" stroke-width="4"/>
+<g fill="#1aa5be"><rect x="510" y="170" width="36" height="50"/><rect x="570" y="140" width="36" height="80"/><rect x="630" y="110" width="36" height="110"/><rect x="690" y="90" width="36" height="130"/></g>
+<rect x="100" y="320" width="420" height="24" rx="6" fill="#8b6a4e"/><rect x="130" y="344" width="14" height="80" fill="#6b5039"/><rect x="476" y="344" width="14" height="80" fill="#6b5039"/>
+<rect x="130" y="250" width="56" height="75" rx="18" fill="#34495e"/><circle cx="158" cy="228" r="22" fill="#e8b98f"/>
+<rect x="230" y="250" width="56" height="75" rx="18" fill="#c0504d"/><circle cx="258" cy="228" r="22" fill="#f1c9a5"/><path d="M236 225 Q258 195 280 225Z" fill="#3a2a20"/>
+<rect x="330" y="250" width="56" height="75" rx="18" fill="#6c8f3e"/><circle cx="358" cy="228" r="22" fill="#d9a77a"/>
+<rect x="560" y="260" width="60" height="100" rx="18" fill="#1d4e89"/><circle cx="590" cy="236" r="23" fill="#f1c9a5"/>
+<path d="M570 214 Q590 196 612 216Z" fill="#2b2b2b"/><path d="M585 280 L540 200" stroke="#1d4e89" stroke-width="14" stroke-linecap="round"/>
+<path d="M575 355 L570 430 M605 355 L612 430" stroke="#2b2b2b" stroke-width="16" stroke-linecap="round"/>
+<rect x="190" y="306" width="50" height="10" fill="#fff"/><rect x="300" y="306" width="50" height="10" fill="#fff"/>
+</svg>

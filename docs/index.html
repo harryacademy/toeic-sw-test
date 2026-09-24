@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/app.css?v=0.2.0">
+  <link rel="stylesheet" href="css/app.css?v=0.3.0">
 </head>
 <body>
   <header class="topbar">
@@ -20,48 +20,14 @@
     </div>
   </header>
 
-  <main>
-    <!-- Phase 0: connection check. Replaced by the test flow in Phase 1. -->
-    <section class="card">
-      <h1>Kiểm tra kết nối</h1>
-      <p class="muted">Trang này kiểm tra đường truyền từ trình duyệt đến máy chủ và Google Sheet.</p>
-      <button id="ping" class="btn" type="button">Kiểm tra kết nối</button>
-      <div id="status" class="status" role="status" aria-live="polite" hidden></div>
-    </section>
+  <main id="app">
+    <noscript><section class="card">Vui lòng bật JavaScript để làm bài.</section></noscript>
   </main>
   <footer class="footer muted" id="version"></footer>
 
-  <script src="js/config.js?v=0.2.0"></script>
-  <script src="js/api.js?v=0.2.0"></script>
-  <script>
-    (function () {
-      var btn = document.getElementById('ping');
-      var out = document.getElementById('status');
-      document.getElementById('version').textContent = 'Phiên bản ' + HA_CONFIG.VERSION;
-      function show(text, ok) {
-        out.hidden = false;
-        out.textContent = text;
-        out.className = 'status ' + (ok ? 'is-ok' : 'is-error');
-      }
-      btn.addEventListener('click', async function () {
-        btn.disabled = true;
-        show('Đang kết nối...', true);
-        var t0 = performance.now();
-        try {
-          var d = await HA_API.call('ping', { note: navigator.userAgent });
-          if (!d || !d.sheet) throw new Error('Phản hồi thiếu dữ liệu.');
-          var ms = Math.round(performance.now() - t0);
-          show('Kết nối thành công (' + ms + ' ms, thử lại ' + HA_API.stats.lastRetries + ' lần).\n' +
-            'Bảng tính: ' + d.sheet + '\n' +
-            'Mô hình AI: ' + d.model + '\n' +
-            'Khóa Gemini: ' + (d.geminiKeySet ? 'đã cài đặt' : 'chưa cài đặt'), true);
-        } catch (e) {
-          show('Lỗi: ' + e.message + ' [' + (e.code || '') + ', thử lại ' + HA_API.stats.lastRetries + ' lần]', false);
-        } finally {
-          btn.disabled = false;
-        }
-      });
-    })();
-  </script>
+  <script src="js/config.js?v=0.3.0"></script>
+  <script src="js/api.js?v=0.3.0"></script>
+  <script src="js/queue.js?v=0.3.0"></script>
+  <script src="js/app.js?v=0.3.0"></script>
 </body>
 </html>

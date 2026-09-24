@@ -54,10 +54,48 @@ clasp redeploy <Deployment ID> -d "mô tả thay đổi"
 ### 6. Đưa trang web lên GitHub Pages
 1. Đẩy mã lên GitHub.
 2. **Settings → Pages → Build and deployment**: Source = *Deploy from a branch*, Branch = `master`, thư mục = `/docs`.
-3. Mở địa chỉ Pages, bấm **Kiểm tra kết nối**. Thành công khi thấy tên bảng tính và một dòng mới trong tab `Log`.
+3. Mở `<địa chỉ Pages>/check.html`, bấm **Kiểm tra kết nối**. Thành công khi thấy tên bảng tính và một dòng mới trong tab `Log`.
+
+### 7. Mã truy cập tạm thời (Giai đoạn 1)
+Cho đến khi có mã dùng một lần (Giai đoạn 3), mọi học viên dùng chung một mã.
+Trong **Project Settings → Script Properties**, thêm:
+- Tên: `TEMP_ACCESS_CODE`
+- Giá trị: mã tùy chọn, ví dụ `HA2026` (không phân biệt hoa thường).
+
+Đổi mã bất cứ lúc nào bằng cách sửa giá trị này; không cần triển khai lại.
+
+## Cập nhật lên phiên bản mới
+Mỗi khi mã máy chủ có thay đổi:
+```
+clasp push -f
+clasp redeploy <Deployment ID> -d "mô tả thay đổi"
+```
+Nếu phiên bản mới thêm cột hoặc tab, mở Sheet và chọn lại **HA TOEIC → Khởi tạo các trang tính** (an toàn, không xóa dữ liệu).
+
+## Kiểm tra chấm điểm
+Trong trình soạn thảo Apps Script, chọn hàm rồi bấm **Run**, xem kết quả ở **Execution log**:
+- `testRequiredWords`: kiểm tra bộ nhận diện hai từ bắt buộc (câu 1–5). Không tốn lượt Gemini.
+- `testGradeOnce`: chấm thử một bài e-mail mẫu. Tốn 1 lượt Gemini.
 
 ## Thêm đề thi mới
-*(Hoàn thiện ở Giai đoạn 1.)*
+Mỗi đề là một file `apps-script/Form<Tên>.gs`. Cách nhanh nhất: sao chép `FormWritingSample01.gs`, rồi:
+1. Đổi mã đề ở cả hai chỗ: `FORMS['MÃ-ĐỀ']` và `id: 'MÃ-ĐỀ'`.
+2. Sửa nội dung từng câu. Mỗi *step* là một màn hình có giờ riêng (`time_sec`, tính bằng giây).
+   - Câu 1–5 (`picture_sentence`): `image` (đường dẫn ảnh), `words` (hai từ bắt buộc), `grading.image_description` (mô tả ảnh cho AI, học viên không thấy).
+   - Câu 6–7 (`email`): `email` (from, to, subject, body), `task` (yêu cầu cho học viên), `grading.tasks` (danh sách việc AI cần kiểm tra).
+   - Câu 8 (`essay`): `prompt`.
+3. Ảnh đặt trong `docs/m/q7r2k9xw/` (hoặc một thư mục có tên khó đoán khác). Dùng ảnh `.jpg`, `.png` hoặc `.webp` để AI được xem ảnh thật; với `.svg` AI chỉ đọc phần mô tả.
+4. Đặt đề đang dùng trong `apps-script/Config.gs`: `ACTIVE_FORM: 'MÃ-ĐỀ'`.
+5. `clasp push -f`, `clasp redeploy ...`, rồi đẩy `docs/` lên GitHub.
+
+Mọi nội dung trong mục `grading` chỉ nằm trên máy chủ, không gửi về trình duyệt. Không dùng đề thi chính thức của ETS.
+
+## Bài mẫu chấm chuẩn (anchor) và thử nghiệm nhiệt độ
+Trong `apps-script/Rubrics.gs`:
+- `RUBRICS`: thang điểm cho từng dạng câu. Có thể chỉnh câu chữ.
+- `ANCHORS`: bài làm thật của học viên (đã ẩn danh) kèm điểm do giáo viên chấm. AI dùng các bài này để chấm theo chuẩn của trung tâm. Cách điền có ví dụ ngay trong file.
+
+Sau khi có anchor, chọn **HA TOEIC → Chạy thử nghiệm nhiệt độ** trong Sheet. Mỗi anchor được chấm nhiều lần ở nhiệt độ 1.0 và 0.2 (anchor đang chấm được loại khỏi phần ví dụ). Kết quả chi tiết ở tab `TempTest`, tóm tắt (tỉ lệ trùng điểm, sai số trung bình) ở tab `Log`.
 
 ## Tạo mã truy cập
 *(Hoàn thiện ở Giai đoạn 3.)*
@@ -68,3 +106,6 @@ clasp redeploy <Deployment ID> -d "mô tả thay đổi"
 | Chưa cấu hình địa chỉ máy chủ | Chưa dán `API_URL` vào `docs/js/config.js` |
 | Máy chủ trả về dữ liệu không hợp lệ | Deployment chưa đặt quyền truy cập *Anyone*, hoặc chưa cấp quyền ở bước 3 |
 | Missing tab "..." | Chưa chạy **Khởi tạo các trang tính** |
+| Máy chủ chưa cài mã truy cập | Chưa thêm `TEMP_ACCESS_CODE` vào Script Properties |
+| Chưa chấm được ... câu (Gemini HTTP 400/403) | Khóa Gemini sai hoặc hết hạn; xem tab `Results`, cột `review_flag` |
+| Hệ thống đã đạt giới hạn chấm bài trong ngày | Đã dùng hết `DAILY_GEMINI_CAP` lượt Gemini trong ngày (sửa trong `Config.gs`) |

@@ -8,11 +8,20 @@
  * rid (request id) makes retries safe: Google's redirect step occasionally loses a reply
  * or returns another request's reply. The client checks that rid matches and retries with
  * the same rid; the server returns the cached result instead of doing the work twice.
+ * Only successful replies are cached: a failed action did no lasting work, so a retry runs it again.
  */
 
-var ACTIONS = {
-  ping: actionPing_
-};
+// A function, not a top-level object: Apps Script runs files in order, so functions from files
+// loaded after this one do not exist yet when this file's top-level code runs.
+function actions_() {
+  return {
+    ping: actionPing_,
+    startSession: actionStartSession_,
+    getForm: actionGetForm_,
+    submitAnswer: actionSubmitAnswer_,
+    finishTest: actionFinishTest_
+  };
+}
 
 var RID_TTL_SECONDS = 600;       // how long a finished result is kept for retries
 var RID_PENDING_SECONDS = 360;   // Apps Script max run time; marks a request still running
@@ -38,16 +47,18 @@ function doPost(e) {
     cache.put(key, 'pending', RID_PENDING_SECONDS);
   }
 
-  var body = JSON.stringify(handle_(req, rid));
+  var result = handle_(req, rid);
+  var body = JSON.stringify(result);
   if (key) {
-    if (body.length <= CACHE_VALUE_LIMIT) cache.put(key, body, RID_TTL_SECONDS);
+    if (result.ok && body.length <= CACHE_VALUE_LIMIT) cache.put(key, body, RID_TTL_SECONDS);
     else cache.remove(key);
   }
   return text_(body);
 }
 
 function handle_(req, rid) {
-  var handler = ACTIONS[req.action];
+  var actions = actions_();
+  var handler = Object.prototype.hasOwnProperty.call(actions, req.action) ? actions[req.action] : null;
   if (!handler) {
     return { ok: false, rid: rid, error: { code: 'UNKNOWN_ACTION', message: 'Unknown action: ' + req.action } };
   }

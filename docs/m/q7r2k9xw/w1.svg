@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500"><title>A man riding a bicycle along a river path</title>
+<rect width="800" height="500" fill="#dff1f7"/><circle cx="680" cy="80" r="40" fill="#ffd66b"/>
+<rect y="210" width="800" height="90" fill="#6fb7d6"/><path d="M0 215 Q200 205 400 215 T800 215" stroke="#9fd3e8" stroke-width="4" fill="none"/>
+<rect y="150" width="800" height="62" fill="#8cc084"/>
+<g fill="#4f8f4a"><circle cx="80" cy="140" r="38"/><circle cx="190" cy="130" r="46"/><circle cx="330" cy="142" r="36"/><circle cx="520" cy="128" r="48"/><circle cx="650" cy="140" r="36"/></g>
+<rect y="300" width="800" height="200" fill="#a7cf8f"/><path d="M0 330 L800 330 L800 400 L0 400Z" fill="#c9c2b4"/>
+<g stroke="#2b2b2b" stroke-width="7" fill="none"><circle cx="330" cy="390" r="46"/><circle cx="480" cy="390" r="46"/>
+<path d="M330 390 L380 330 L460 330 L480 390 M380 330 L410 390 L330 390 M410 390 L460 330 M455 318 L470 318"/></g>
+<path d="M395 250 L430 320 L410 390" stroke="#1d4e89" stroke-width="16" fill="none" stroke-linecap="round"/>
+<path d="M405 250 L455 300" stroke="#e05a47" stroke-width="16" stroke-linecap="round"/>
+<rect x="378" y="220" width="40" height="70" rx="14" fill="#e05a47" transform="rotate(20 398 255)"/>
+<circle cx="425" cy="205" r="20" fill="#f1c9a5"/><path d="M402 200 Q425 170 450 198Z" fill="#1aa5be"/>
+</svg>
