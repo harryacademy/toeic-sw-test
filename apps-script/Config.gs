@@ -21,7 +21,7 @@ var CONFIG = {
   PAGES_BASE_URL: 'https://harryacademy.github.io/toeic-sw-test/',
 
   // Cost protection
-  DAILY_GEMINI_CAP: 500,           // Gemini calls per day (Asia/Ho_Chi_Minh), all students together
+  DAILY_GEMINI_CAP: 100,           // Gemini calls per day (Asia/Ho_Chi_Minh), all students together. ~9 calls per Writing test
   SESSION_TTL_MINUTES: 180,
 
   // Temperature experiment (runTemperatureTest in TempTest.gs)

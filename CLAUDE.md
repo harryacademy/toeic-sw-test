@@ -69,6 +69,7 @@ Before the test: short Vietnamese consent notice (name/phone collection) + requi
 - Test content: form JSON served by Apps Script only after a valid session; media on Pages under hard-to-guess folder names (obscurity, accepted).
 - Writing Q1–5: free navigation within the shared 8 min block; all other questions locked (no going back).
 - Speaking Q1–2 WER: transcribe audio in a call that does NOT see the reference text.
+- Daily Gemini cap: 100 calls/day (2026-09-24). Phase 3: one code per student (single-use), so a code cannot be reused.
 - Final report: estimated 0–200 score per section shown as a 20-point RANGE (e.g. "130–150 (ước tính)"), from an editable raw→range table the owner calibrates, with disclaimer "Điểm ước tính dựa trên bài thi mô phỏng, không phải điểm chính thức của ETS." This replaces the earlier "no scaled scores" rule. No course recommendation for now.
 
 ## Project location
