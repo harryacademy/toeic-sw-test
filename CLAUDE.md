@@ -97,6 +97,7 @@ Before the test: short Vietnamese consent notice (name/phone collection) + requi
 - The GitHub repo is PUBLIC. `apps-script/Private*.gs` is gitignored but still pushed by clasp: real forms and anchors (PrivateAnchors.gs, template PrivateAnchors.example.txt) live there. The owner backs these files up himself. Never put ETS manual text or benchmarks in the repo.
 - Rubric level text in Rubrics.gs is our own paraphrase of the ETS Writing scoring guides (owner's 2019 Propell workshop manual). The manual's raw-to-scaled table (per question type patterns, weighted toward Q8) is the starting point for the Phase 3 range table.
 - House standard for Q6-7 (owner, 2026-09-24): a 4 needs each task developed; a bare-minimum reply is at most 3. The sample e-mail in testGradeSample is the owner's reference 3/4 (literal ETS reading gave 4).
+- House standard for Q8 (owner, 2026-09-25): length is not a cap (~200 words, clear opinion, two developed reasons = 4); weigh errors by effect not count; spelling/style listed but near-zero weight. First anchor A-ESSAY-01 (owner 4/5) is in PrivateAnchors.gs.
 - Results are reported per question type (Q1-5 average, Q6-7 each, Q8), never as one raw sum; Sessions.writing_raw holds that summary string.
 - Grading: Grading.gs (rule checks + prompt), Gemini.gs (fetchAll, retries, daily cap), Rubrics.gs (RUBRICS, ANCHORS).
 - rid cache stores only ok replies. submitAnswer is also idempotent per (session, question) via the Results sheet, and saves the answer even when grading fails (review_flag AI_ERROR).
@@ -110,6 +111,7 @@ Before the test: short Vietnamese consent notice (name/phone collection) + requi
   - Report page shows raw scores + AI feedback per question; the 0–200 range table is Phase 3.
   - Placeholder pictures are SVG, so Gemini gets only the text description; owner should swap in real JPG/PNG photos.
 - 2026-09-24 (later): owner deployed backend @3; testGradeOnce OK (sample e-mail scored 3/4, owner agrees with 3). Owner approved: ETS-aligned rubric rewrite, grouped report (no /28 sum), Private*.gs split, Sent line in e-mails. Built, not yet pushed/deployed.
+- 2026-09-25: owner took the full test on the live site (PC): flow, F5 resume, grading, Sheet rows all OK. Q1-7 scores matched the owner; Q8 AI 3 vs owner 4 -> Q8 house rule + first anchor added. Owner keeps 'Question 1..' labels in English. Owner has a pending request about scores (ask him).
 - Next session: owner deploys (clasp push, redeploy, rerun setupSheets, set TEMP_ACCESS_CODE), runs testGradeSample, takes the test on PC + phone, and reviews the real AI feedback. Then fix issues and start Phase 2 only after approval.
 - Waiting on owner: 3–5 real student answers per Writing task type with the owner's scores (anonymised), for ANCHORS and runTemperatureTest.
 - Owner is on Windows. clasp is installed on the owner's machine and logged in as harry@harryacademy.edu.vn. Global installs made from Claude's sandbox do NOT reach the owner's machine.

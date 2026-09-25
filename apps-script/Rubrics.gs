@@ -43,7 +43,11 @@ var RUBRICS = {
       '1 — Seriously weak in one or more of these ways: very disorganized or barely developed; little or no detail, or details that are off the point; hardly answers the question; serious and frequent errors in sentence structure or usage.',
       '0 — Only copies words from the topic, rejects or ignores the topic, is not written in English, is random keystrokes, or is blank.'
     ],
-    notes: 'An effective essay usually has at least 300 words and several paragraphs, but length alone does not earn a score: judge development, organization and language. Raters do not expect perfection; high scores may contain occasional minor errors.'
+    notes: 'Judge development, organization and whether errors get in the way of meaning. ' +
+      'LENGTH: about 300 words is typical of an effective essay, but length is NOT a cap. An essay of about 200 words with a clear opinion and two reasons that are each explained can score 4. Only lower the score for length when the ideas are actually underdeveloped. ' +
+      'ERRORS: weigh their effect, not their number. Many small errors (articles, agreement, prepositions, word forms) that do not obscure meaning are compatible with 4. ' +
+      'Spelling slips and style suggestions (e.g. a rare but understandable word) should be listed in errors for the student, but they carry almost no weight in the score. ' +
+      'HOUSE STANDARD (Harry Academy head teacher): a clear opinion plus two developed reasons, with frequent errors that do not block meaning, is a 4; lack of specific examples alone does not pull it down to 3.'
   }
 };
 
