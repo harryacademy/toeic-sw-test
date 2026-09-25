@@ -5,9 +5,9 @@
  * Run from the Sheet menu HA TOEIC, or from the editor. Uses Gemini calls (counts toward the daily cap).
  */
 function runTemperatureTest() {
-  var anchors = ANCHORS.filter(function (a) { return a.response && a.owner_score !== undefined && a.owner_score !== ''; });
+  var anchors = allAnchors_().filter(function (a) { return a.response && a.owner_score !== undefined && a.owner_score !== ''; });
   if (!anchors.length) {
-    var msg = 'No anchors with owner_score in Rubrics.gs yet.';
+    var msg = 'No active anchors with owner_score yet (Anchors tab).';
     log_('tempTest', msg);
     return msg;
   }

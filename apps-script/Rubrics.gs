@@ -2,7 +2,7 @@
  * Rubrics and anchor samples for the AI grader. The owner edits this file.
  *
  * RUBRICS: level descriptors per task type, paraphrasing the official TOEIC Writing scoring criteria.
- * ANCHORS: real student answers scored by the owner (anonymised), defined in PrivateAnchors.gs.
+ * ANCHORS: real student answers scored by the owner (anonymised): the Anchors tab (Anchors.gs) and PrivateAnchors.gs.
  *          They are shown to the grader as calibration examples, and runTemperatureTest() uses them
  *          to measure AI vs owner agreement.
  * Level descriptors are our own wording of the TOEIC Writing scoring guides; do not paste ETS text here.
@@ -46,17 +46,19 @@ var RUBRICS = {
     notes: 'Judge development, organization and whether errors get in the way of meaning. ' +
       'LENGTH: about 300 words is typical of an effective essay, but length is NOT a cap. An essay of about 200 words with a clear opinion and two reasons that are each explained can score 4. Only lower the score for length when the ideas are actually underdeveloped. ' +
       'ERRORS: weigh their effect, not their number. Many small errors (articles, agreement, prepositions, word forms) that do not obscure meaning are compatible with 4. ' +
-      'Spelling slips and style suggestions (e.g. a rare but understandable word) should be listed in errors for the student, but they carry almost no weight in the score. ' +
+      'Spelling slips never lower the score (see the SPELLING rule); style suggestions (e.g. a rare but understandable word) are listed for the student but carry almost no weight. ' +
+      'A 5 does not need to be error-free: a clear opinion, well-developed reasons with specific examples, good linking and varied sentences earn 5 even with several spelling slips and a few small usage errors. ' +
       'HOUSE STANDARD (Harry Academy head teacher): a clear opinion plus two developed reasons, with frequent errors that do not block meaning, is a 4; lack of specific examples alone does not pull it down to 3.'
   }
 };
 
-// Anchor samples live in PrivateAnchors.gs (not in git; see PrivateAnchors.example.txt).
+// Anchor samples: normally rows in the Anchors tab (see Anchors.gs). Code-defined ones can also go in
+// PrivateAnchors.gs (not in git; see PrivateAnchors.example.txt).
 var ANCHORS = ANCHORS || [];
 
 /** Anchors with an owner score, for one task type. excludeId skips one (used by the temperature test). */
 function anchorsFor_(type, excludeId) {
-  return ANCHORS.filter(function (a) {
+  return allAnchors_().filter(function (a) {
     return a.type === type && a.id !== excludeId && a.response && a.owner_score !== undefined && a.owner_score !== '';
   });
 }

@@ -89,6 +89,7 @@ function graderSystemText_(type, excludeAnchorId) {
     '- feedback_vi: 3 to 5 sentences addressed to the student as "bạn": what was done well, the most important things to improve, and one concrete tip. Do not mention the numeric score.',
     '- band_note: one sentence for the teacher explaining why the answer is at this level and not the next level up.',
     '- Write all *_vi fields and band_note in Vietnamese with full diacritics. Keep English words and quotes from the answer in English.',
+    '- SPELLING (Harry Academy rule): spelling mistakes and obvious typos where the intended word is clear (e.g. "affacted", "traffiic", "That" typed for "What") must NEVER be the reason for a lower score. Score the answer as if they were corrected; if that corrected answer deserves the higher level, give the higher level. Still list them in errors so the student can fix them, but band_note must not give spelling as the reason for not reaching the next level.',
     '',
     'Criteria: ' + r.criteria.join('; '),
     'Score levels:',

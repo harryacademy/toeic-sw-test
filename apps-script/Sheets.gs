@@ -4,6 +4,7 @@ function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('HA TOEIC')
     .addItem('Khởi tạo các trang tính', 'setupSheets')
+    .addItem('Tạo anchor từ dòng đang chọn (tab Results)', 'createAnchorsFromSelection')
     .addItem('Chạy thử nghiệm nhiệt độ (temperature)', 'runTemperatureTest')
     .addToUi();
 }

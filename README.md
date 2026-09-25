@@ -100,7 +100,14 @@ Mọi nội dung trong mục `grading` chỉ nằm trên máy chủ, không gử
 
 ## Bài mẫu chấm chuẩn (anchor) và thử nghiệm nhiệt độ
 - `apps-script/Rubrics.gs`: thang điểm cho từng dạng câu (diễn đạt lại theo thang điểm TOEIC Writing, không chép nguyên văn). Có thể chỉnh câu chữ.
-- `apps-script/PrivateAnchors.gs`: bài làm thật của học viên (đã ẩn danh) kèm điểm và ghi chú của giáo viên. AI dùng các bài này để chấm theo chuẩn của trung tâm. Lần đầu, sao chép `PrivateAnchors.example.txt` thành `PrivateAnchors.gs` rồi sửa theo hướng dẫn trong file. Nhớ **xóa các ví dụ mẫu** trong file trước khi `clasp push`.
+- **Tab `Anchors` trong Sheet**: bài làm thật (đã ẩn danh) kèm điểm và lý do của giáo viên. AI dùng các bài này để chấm theo chuẩn của trung tâm. Cách thêm:
+  1. Mở tab **Results**, chọn (bôi đen) dòng bài làm muốn dùng. Chọn nhiều dòng liền nhau cũng được.
+  2. Chọn menu **HA TOEIC → Tạo anchor từ dòng đang chọn (tab Results)**. Các dòng được chép sang tab Anchors.
+  3. Trong tab **Anchors**, điền `owner_score` (điểm anh chấm) và `owner_note` (một câu lý do), rồi **tick ô `active`**.
+  - Chỉ dòng đã tick `active` và có `owner_score` mới được dùng. Muốn tạm ngừng dùng một anchor, bỏ tick, không cần xóa.
+  - Bỏ trống `owner_note` cũng được, nhưng một câu lý do giúp AI hiểu chuẩn của anh rõ hơn nhiều.
+  - Không cần `clasp` hay triển khai lại: lần chấm tiếp theo dùng ngay anchor mới.
+- `apps-script/PrivateAnchors.gs` (tùy chọn): anchor viết bằng code, cho trường hợp đặc biệt. Mẫu ở `PrivateAnchors.example.txt`.
 
 Sau khi có anchor, chọn **HA TOEIC → Chạy thử nghiệm nhiệt độ** trong Sheet. Mỗi anchor được chấm nhiều lần ở nhiệt độ 1.0 và 0.2 (anchor đang chấm được loại khỏi phần ví dụ). Kết quả chi tiết ở tab `TempTest`, tóm tắt (tỉ lệ trùng điểm, sai số trung bình) ở tab `Log`.
 
