@@ -31,7 +31,8 @@ var RUBRICS = {
       '0 — Only copies words from the prompt, rejects or ignores the topic, is not written in English, is random keystrokes, or is blank.'
     ],
     notes: 'Count each required task explicitly (how many questions, suggestions, pieces of information). A task counts as done only if the reader would get what was asked for. Raters do not expect perfection: isolated small errors do not stop a 4. ' +
-      'HOUSE STANDARD (Harry Academy head teacher): 4 requires the tasks to be done EFFECTIVELY — each task is developed with a reason, detail or context, and the sentences are connected into a real e-mail. A bare-minimum reply (one short plain sentence per task, no development) scores at most 3, even with few errors. Organization in a very short reply is at most fair.'
+      'HOUSE STANDARD (Harry Academy head teacher): 4 requires the tasks to be done EFFECTIVELY — each task is developed with a reason, detail or context, and the sentences are connected into a real e-mail. A bare-minimum reply (one short plain sentence per task, no development) scores at most 3, even with few errors. Organization in a very short reply is at most fair. ' +
+      'QUESTIONS and SUGGESTIONS must each carry their own explanation: why the writer is asking, or why they suggest it (e.g. "Do I need my own mat? I do not have one yet."). General background at the start of the e-mail (e.g. "I am new here") does NOT count as explaining the questions. If a required question or suggestion is given bare, with no reason, that task is only partly done → at most 3. Short, simple sentences throughout also point to 3.'
   },
   essay: {
     criteria: ['Opinion and support (reasons, examples, details)', 'Organization, unity and coherence', 'Grammar and sentence variety', 'Vocabulary and idiomatic use'],
