@@ -17,6 +17,7 @@ function setupSheets() {
     sheet.getRange(1, 1, 1, headers.length).setValues([headers]).setFontWeight('bold');
     sheet.setFrozenRows(1);
   });
+  seedScoreMap_();
   var blank = ss.getSheetByName('Sheet1') || ss.getSheetByName('Trang tính1');
   if (blank && blank.getLastRow() === 0 && ss.getSheets().length > 1) ss.deleteSheet(blank);
   return 'OK';

@@ -367,9 +367,17 @@
         : shown.join(' và ') + ' / ' + g.max;
       return `<tr><td>${esc(label)}</td><td>${esc(value)}</td></tr>`;
     }).join('');
+    const est = r.estimate;
+    const estBlock = est ? `
+        <div class="estimate">
+          <div class="estimate-label">Điểm Writing ước tính</div>
+          <div class="estimate-range">${esc(est.low)}–${esc(est.high)}<span>/ 200</span></div>
+          ${est.level ? `<div class="estimate-level">Level ${esc(est.level)}</div>` : ''}
+        </div>` : '';
     app.innerHTML = `
       <section class="card">
         <h1>Kết quả phần Writing</h1>
+        ${estBlock}
         <table class="plan summary">${groupRows}</table>
         <p class="muted small">Điểm ước tính dựa trên bài thi mô phỏng, không phải điểm chính thức của ETS. Tư vấn viên của Harry Academy sẽ liên hệ để giải thích kết quả.</p>
         ${items}

@@ -34,7 +34,8 @@ var CONFIG = {
     SESSIONS: 'Sessions',
     CODES: 'Codes',
     LOG: 'Log',
-    TEMP_TEST: 'TempTest'
+    TEMP_TEST: 'TempTest',
+    SCORE_MAP: 'ScoreMap'
   },
 
   // Optional: Drive folder ID for audio files (empty = do not save audio)
@@ -59,5 +60,6 @@ var SCHEMA = {
   ],
   Codes: ['code', 'created_by', 'created_at', 'used_at', 'status', 'session_id'],
   Log: ['timestamp', 'action', 'detail'],
-  TempTest: ['timestamp', 'anchor_id', 'type', 'owner_score', 'temperature', 'run', 'ai_score', 'error']
+  TempTest: ['timestamp', 'anchor_id', 'type', 'owner_score', 'temperature', 'run', 'ai_score', 'error'],
+  ScoreMap: ['section', 'kind', 'x', 'y', 'note']  // see Score.gs; seeded with defaults, then edited by the owner
 };

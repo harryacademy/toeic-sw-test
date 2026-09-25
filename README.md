@@ -106,7 +106,26 @@ Sau khi có anchor, chọn **HA TOEIC → Chạy thử nghiệm nhiệt độ** 
 
 ## Đọc kết quả
 - Trang kết quả và cột `writing_raw` trong tab `Sessions` hiện điểm **theo nhóm câu**, ví dụ `Q1-5 TB 2.4/3 | Q6-7 3, 2 /4 | Q8 3/5`. Không cộng thành một tổng, vì ETS tính trọng số: câu 8 nặng nhất, câu 1–5 nhẹ nhất.
-- Khoảng điểm ước tính 0–200 sẽ có ở Giai đoạn 3.
+- Trang kết quả hiện **khoảng điểm ước tính 0–200** và Level (1–9). Cột `writing_estimate` trong tab `Sessions` ghi thêm điểm ước tính chính xác và điểm tổng hợp, ví dụ `140-160 (Level 7) | 149 | weighted 0.696`.
+
+## Bảng quy đổi điểm (tab `ScoreMap`)
+Cách tính, theo phương pháp ETS mô tả trong manual:
+1. Lấy trung bình từng dạng câu, chia cho điểm tối đa của dạng đó (được số từ 0 đến 1).
+2. Nhân trọng số rồi cộng lại, được **điểm tổng hợp** từ 0 đến 1.
+3. Tra điểm tổng hợp ra thang 0–200 theo các mốc trong bảng (giữa hai mốc thì nội suy theo đường thẳng).
+4. Làm tròn đến 10, hiện khoảng ± 10 điểm, ví dụ 149 → **140–160**.
+
+Tab `ScoreMap` có 5 cột: `section | kind | x | y | note`. Anh sửa số trực tiếp trong Sheet, không cần `clasp`:
+- `weight`: trọng số từng dạng câu (x = dạng câu, y = trọng số). Mặc định 0.20 / 0.35 / 0.45.
+- `point`: các mốc quy đổi (x = điểm tổng hợp, y = điểm 0–200). Mặc định dựng từ bảng ví dụ trong manual ETS; cột `note` ghi dạng điểm tương ứng.
+- `level`: mức năng lực ETS (x = điểm thấp nhất của mức, y = Level).
+- `setting` / `range_half_width`: độ rộng khoảng hiển thị (10 → khoảng 20 điểm).
+
+Nếu tab `ScoreMap` bị xóa, chọn **HA TOEIC → Khởi tạo các trang tính** để tạo lại với giá trị mặc định. Nếu tab đã có dữ liệu, bước này không ghi đè.
+
+Kiểm tra bảng: chạy hàm `testScoreMap` (file `Score.gs`) trong trình soạn thảo. Hàm này thử 9 dòng ví dụ của ETS và báo dòng nào lệch khỏi khoảng của nó. Không tốn lượt Gemini.
+
+Cách hiệu chỉnh tốt nhất: cho học viên **đã có điểm ETS thật** làm bài thử, so điểm ước tính (cột `writing_estimate`) với điểm thật, rồi chỉnh trọng số hoặc các mốc.
 - Cột `review_flag` trong tab `Results` khác trống nghĩa là câu đó cần giáo viên xem lại.
 
 ## Tạo mã truy cập

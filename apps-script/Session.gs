@@ -92,7 +92,7 @@ function actionFinishTest_(payload, req) {
   });
 
   // Scores are reported per question type, not as one sum: ETS weights the harder types more,
-  // so a plain total would overstate Q1–5. The 0–200 estimate (Phase 3) is built from these groups.
+  // so a plain total would overstate Q1–5. The 0–200 estimate (Score.gs) is built from these groups.
   var items = [], groups = [], byType = {};
   form.steps.forEach(function (step) {
     var g = byType[step.type];
@@ -129,12 +129,17 @@ function actionFinishTest_(payload, req) {
     return g.label + ' ' + (g.scores.length > 2 ? 'TB ' + g.avg + '/' + g.max : shown.join(', ') + ' /' + g.max);
   }).join(' | ');
 
-  var col = form.section === 'speaking' ? 'speaking_raw' : 'writing_raw';
+  var estimate = estimateScaled_(groups, loadScoreMap_(form.section));
+  var estimateText = estimate
+    ? estimate.low + '-' + estimate.high + ' (Level ' + estimate.level + ') | ' + estimate.score + ' | weighted ' + estimate.weighted
+    : '';
+
   var update = { completed_at: new Date(), status: 'completed' };
-  update[col] = summary;
+  update[form.section + '_raw'] = summary;
+  update[form.section + '_estimate'] = estimateText;
   updateCells_(CONFIG.TABS.SESSIONS, s.row, update);
-  log_('finishTest', s.session_id + ' ' + summary);
-  return { section: form.section, groups: groups, items: items };
+  log_('finishTest', s.session_id + ' ' + summary + ' | ' + estimateText);
+  return { section: form.section, groups: groups, items: items, estimate: estimate };
 }
 
 function resultFromRow_(r) {
