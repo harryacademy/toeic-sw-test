@@ -65,9 +65,11 @@
   const stats = { lastRetries: 0 };
 
   // opts.rid: reuse a request id (the background queue keeps one per item across page reloads).
+  // opts.url: call this API URL instead of HA_CONFIG.API_URL (e.g. the test deployment).
   async function call(action, payload, session, opts) {
     const cfg = window.HA_CONFIG;
-    if (!cfg.API_URL || cfg.API_URL.indexOf('/exec') === -1) {
+    const url = (opts && opts.url) || cfg.API_URL;
+    if (!url || url.indexOf('/exec') === -1) {
       throw new ApiError('NO_API_URL', 'Chưa cấu hình địa chỉ máy chủ (API_URL).');
     }
     const rid = (opts && opts.rid) || newRid();
@@ -76,7 +78,7 @@
     for (let attempt = 0; attempt <= RETRY_DELAYS_MS.length; attempt++) {
       stats.lastRetries = attempt;
       try {
-        return await once(cfg.API_URL, body, rid, cfg.REQUEST_TIMEOUT_MS);
+        return await once(url, body, rid, cfg.REQUEST_TIMEOUT_MS);
       } catch (err) {
         lastErr = err;
         if (!RETRYABLE.has(err.code) || attempt === RETRY_DELAYS_MS.length) break;

@@ -6,6 +6,7 @@ function onOpen() {
     .addItem('Khởi tạo các trang tính', 'setupSheets')
     .addItem('Tạo anchor từ dòng đang chọn (tab Results)', 'createAnchorsFromSelection')
     .addItem('Chạy thử nghiệm nhiệt độ (temperature)', 'runTemperatureTest')
+    .addItem('Bật tự động xóa ghi âm cũ (7 ngày)', 'installAudioCleanup')
     .addToUi();
 }
 

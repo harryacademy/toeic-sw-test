@@ -19,7 +19,8 @@ function actions_() {
     startSession: actionStartSession_,
     getForm: actionGetForm_,
     submitAnswer: actionSubmitAnswer_,
-    finishTest: actionFinishTest_
+    finishTest: actionFinishTest_,
+    uploadTestAudio: actionUploadTestAudio_
   };
 }
 

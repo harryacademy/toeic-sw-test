@@ -135,6 +135,12 @@ Kiểm tra bảng: chạy hàm `testScoreMap` (file `Score.gs`) trong trình so�
 Cách hiệu chỉnh tốt nhất: cho học viên **đã có điểm ETS thật** làm bài thử, so điểm ước tính (cột `writing_estimate`) với điểm thật, rồi chỉnh trọng số hoặc các mốc.
 - Cột `review_flag` trong tab `Results` khác trống nghĩa là câu đó cần giáo viên xem lại.
 
+## Ghi âm (Giai đoạn 2)
+- Bản ghi âm được lưu vào thư mục Google Drive **"HA TOEIC SW - Ghi am"** (tự tạo lần đầu; ID lưu trong Script Property `AUDIO_FOLDER_ID`). Chỉ tài khoản của trung tâm xem được, trừ khi anh chia sẻ thư mục cho giáo viên.
+- **Tự xóa sau 7 ngày:** chọn một lần **HA TOEIC → Bật tự động xóa ghi âm cũ (7 ngày)**. Mỗi ngày lúc 3 giờ sáng, file cũ hơn 7 ngày được chuyển vào thùng rác Drive; Google xóa hẳn sau 30 ngày. Đổi số ngày ở `AUDIO_RETENTION_DAYS` trong `Config.gs`.
+- **Kiểm tra thiết bị:** trang `<địa chỉ Pages>/mic.html` bật micro, ghi thử, nghe lại, và gửi thử một bản ghi 45 giây lên Drive (cần mã truy cập). Không chấm điểm.
+- Trang `mic.html` dùng máy chủ thử nghiệm (`DEV_API_URL` trong `docs/js/config.js`) nếu có, để không ảnh hưởng bản đang chạy cho học viên.
+
 ## Tạo mã truy cập
 *(Hoàn thiện ở Giai đoạn 3.)*
 

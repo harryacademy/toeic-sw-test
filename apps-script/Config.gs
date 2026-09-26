@@ -39,8 +39,9 @@ var CONFIG = {
     ANCHORS: 'Anchors'
   },
 
-  // Optional: Drive folder ID for audio files (empty = do not save audio)
-  AUDIO_FOLDER_ID: '',
+  // Audio (Drive folder ID is kept in Script Property AUDIO_FOLDER_ID, created automatically; see Audio.gs)
+  AUDIO_RETENTION_DAYS: 7,
+  AUDIO_MAX_BYTES: 8 * 1024 * 1024,
 
   // Optional: consultant email on test completion (empty = off)
   CONSULTANT_EMAIL: ''

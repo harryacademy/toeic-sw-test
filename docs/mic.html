@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Harry Academy — Kiểm tra micro</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="img/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css?v=0.5.0">
+</head>
+<body>
+  <header class="topbar">
+    <img class="brand-mark" src="img/logo.png" alt="Harry Academy">
+    <div>
+      <div class="brand-name">Harry Academy</div>
+      <div class="brand-sub">Kiểm tra micro và ghi âm</div>
+    </div>
+  </header>
+
+  <!-- Phase 2a device test: records, stores on the device, uploads to Drive. No grading. -->
+  <main>
+    <section class="card">
+      <h1>Kiểm tra micro</h1>
+      <p class="muted">Trang này kiểm tra thiết bị của bạn có ghi âm và gửi bài nói được không. Bản ghi được lưu vào Google Drive của Harry Academy và tự xóa sau 7 ngày. Không chấm điểm.</p>
+      <div id="inapp" class="status is-error" hidden>Bạn đang mở trang trong ứng dụng (Zalo, Facebook…). Nếu micro không bật được, hãy mở link bằng Chrome hoặc Safari.</div>
+
+      <h2 class="step-title">1. Bật micro</h2>
+      <button id="enable" class="btn" type="button">Bật micro</button>
+      <div class="meter" aria-hidden="true"><div id="level"></div></div>
+      <p class="muted small" id="micinfo">Nói thử vài từ: thanh màu phải nhảy theo giọng của bạn.</p>
+
+      <h2 class="step-title">2. Ghi thử 5 giây và nghe lại</h2>
+      <button id="quick" class="btn btn-ghost" type="button" disabled>Ghi thử 5 giây</button>
+      <audio id="playback" controls hidden></audio>
+
+      <h2 class="step-title">3. Ghi 45 giây và gửi lên máy chủ</h2>
+      <p class="muted small">Đọc to một đoạn văn bất kỳ trong 45 giây, giống câu Read aloud. Có thể bấm Dừng sớm.</p>
+      <label class="field">Mã truy cập<input id="code" autocomplete="off" autocapitalize="characters" maxlength="40"></label>
+      <div class="row row-start">
+        <button id="long" class="btn" type="button" disabled>Bắt đầu ghi 45 giây</button>
+        <button id="stopLong" class="btn btn-ghost" type="button" hidden>Dừng</button>
+        <span id="countdown" class="timer"></span>
+      </div>
+
+      <h2 class="step-title">Kết quả gửi</h2>
+      <ul id="uploads" class="uploads"><li class="muted">Chưa có bản ghi nào.</li></ul>
+      <div id="msg" class="status is-error" role="alert" hidden></div>
+    </section>
+  </main>
+  <footer class="footer muted" id="version"></footer>
+
+  <script>window.HA_QUEUE_KEY = 'ha_mic_queue';</script>
+  <script src="js/config.js?v=0.5.0"></script>
+  <script src="js/api.js?v=0.5.0"></script>
+  <script src="js/audiostore.js?v=0.5.0"></script>
+  <script src="js/queue.js?v=0.5.0"></script>
+  <script src="js/recorder.js?v=0.5.0"></script>
+  <script>
+    (function () {
+      'use strict';
+      const $ = (id) => document.getElementById(id);
+      const apiUrl = HA_CONFIG.DEV_API_URL || HA_CONFIG.API_URL;
+      $('version').textContent = 'Phiên bản ' + HA_CONFIG.VERSION + (HA_CONFIG.DEV_API_URL ? ' · máy chủ thử nghiệm' : '');
+      if (/Zalo|FBAN|FBAV|Instagram|Line\//i.test(navigator.userAgent)) $('inapp').hidden = false;
+      try { $('code').value = localStorage.getItem('ha_mic_code') || ''; } catch (e) { /* ignore */ }
+
+      const showError = (m) => { $('msg').hidden = !m; $('msg').textContent = m || ''; };
+      HA_REC.onLevel = (x) => { $('level').style.width = Math.round(x * 100) + '%'; };
+
+      $('enable').addEventListener('click', async () => {
+        showError('');
+        try {
+          await HA_REC.init();
+          $('enable').textContent = 'Micro đã bật';
+          $('enable').disabled = true;
+          $('quick').disabled = false;
+          $('long').disabled = false;
+          $('micinfo').textContent = 'Micro đã bật (tần số gốc ' + HA_REC.inputRate + ' Hz). Nói thử vài từ: thanh màu phải nhảy theo giọng của bạn.';
+        } catch (e) {
+          showError(e.message);
+        }
+      });
+
+      $('quick').addEventListener('click', () => {
+        $('quick').disabled = true;
+        HA_REC.start();
+        let left = 5;
+        $('quick').textContent = 'Đang ghi… ' + left;
+        const t = setInterval(() => {
+          left--;
+          $('quick').textContent = 'Đang ghi… ' + left;
+          if (left > 0) return;
+          clearInterval(t);
+          const r = HA_REC.stop();
+          const a = $('playback');
+          a.src = URL.createObjectURL(r.blob);
+          a.hidden = false;
+          $('quick').textContent = 'Ghi thử lại 5 giây';
+          $('quick').disabled = false;
+          if (r.peak < 0.02) showError('Bản ghi gần như im lặng. Kiểm tra lại micro hoặc nói to hơn.');
+        }, 1000);
+      });
+
+      let longTimer = null;
+      let deadline = 0;
+      function finishLong() {
+        clearInterval(longTimer);
+        const r = HA_REC.stop();
+        $('stopLong').hidden = true;
+        $('long').disabled = false;
+        $('countdown').textContent = '';
+        const key = 'mic-' + Date.now();
+        HA_AUDIO_STORE.put(key, r.blob).then(() => {
+          HA_QUEUE.add(key, 'uploadTestAudio', {
+            access_code: $('code').value.trim(),
+            label: deviceLabel(),
+            duration_ms: r.durationMs,
+            ua: navigator.userAgent,
+            size: r.blob.size,
+            peak: Math.round(r.peak * 100) / 100
+          }, null, { audioKey: key, url: apiUrl });
+        }).catch((e) => showError('Không lưu được bản ghi trên thiết bị: ' + e.message));
+      }
+
+      $('long').addEventListener('click', () => {
+        showError('');
+        if (!$('code').value.trim()) { showError('Nhập mã truy cập trước khi gửi.'); return; }
+        try { localStorage.setItem('ha_mic_code', $('code').value.trim()); } catch (e) { /* ignore */ }
+        $('long').disabled = true;
+        $('stopLong').hidden = false;
+        HA_REC.start();
+        deadline = Date.now() + 45000;
+        const tick = () => {
+          const s = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+          $('countdown').textContent = '0:' + String(s).padStart(2, '0');
+          if (s <= 0) finishLong();
+        };
+        tick();
+        longTimer = setInterval(tick, 250);
+      });
+      $('stopLong').addEventListener('click', finishLong);
+
+      function deviceLabel() {
+        const ua = navigator.userAgent;
+        const os = /iPhone|iPad/.test(ua) ? 'iOS' : /Android/.test(ua) ? 'Android' : /Windows/.test(ua) ? 'Windows' : /Mac/.test(ua) ? 'Mac' : 'other';
+        const app = /Zalo/.test(ua) ? 'Zalo' : /FBAN|FBAV/.test(ua) ? 'Facebook' : /CriOS|Chrome/.test(ua) ? 'Chrome' : /Safari/.test(ua) ? 'Safari' : 'browser';
+        return os + '-' + app;
+      }
+
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      }
+
+      function renderUploads() {
+        const items = HA_QUEUE.items().slice().reverse();
+        if (!items.length) return;
+        $('uploads').innerHTML = items.map((it) => {
+          const p = it.payload || {};
+          const meta = (p.size ? (p.size / 1048576).toFixed(2) + ' MB · ' : '') + Math.round((p.duration_ms || 0) / 1000) + ' giây';
+          let status;
+          if (it.status === 'done') status = '<a href="' + esc(it.result && it.result.url) + '" target="_blank" rel="noopener">Đã lưu vào Drive</a>';
+          else if (it.status === 'failed') status = '<span class="err">Lỗi: ' + esc(it.error && it.error.message) + '</span>';
+          else status = 'Đang gửi…' + (it.attempts ? ' (thử lại lần ' + it.attempts + ')' : '');
+          return '<li><strong>' + esc(p.label) + '</strong> · ' + meta + '<br>' + status + '</li>';
+        }).join('');
+        const failed = items.some((it) => it.status === 'failed');
+        if (failed && !document.getElementById('retry')) {
+          const b = document.createElement('button');
+          b.id = 'retry'; b.type = 'button'; b.className = 'btn btn-ghost btn-sm'; b.textContent = 'Gửi lại bản bị lỗi';
+          b.addEventListener('click', () => { b.remove(); HA_QUEUE.retryFailed(); });
+          $('uploads').after(b);
+        }
+      }
+      HA_QUEUE.onChange(renderUploads);
+      renderUploads();
+      HA_QUEUE.kick();
+    })();
+  </script>
+</body>
+</html>

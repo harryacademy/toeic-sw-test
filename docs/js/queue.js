@@ -4,7 +4,8 @@
 (function () {
   'use strict';
 
-  const KEY = 'ha_sw_queue';
+  // A page can use its own queue by setting window.HA_QUEUE_KEY before this script loads.
+  const KEY = window.HA_QUEUE_KEY || 'ha_sw_queue';
   // Errors worth retrying later: network trouble, server busy, Gemini overloaded.
   const RETRY_LATER = new Set(['NETWORK', 'TIMEOUT', 'BAD_RESPONSE', 'RID_MISMATCH', 'PENDING', 'USE_POST', 'GRADER_BUSY', 'SERVER']);
   const BACKOFF_MS = [5000, 15000, 30000, 60000];
@@ -33,9 +34,13 @@
   }
 
   // Adds an item unless one with the same key is already queued. key: e.g. 'submit:W3'.
-  function add(key, action, payload, session) {
+  // extra.audioKey: a recording in HA_AUDIO_STORE, sent as payload.audio_b64 and deleted once sent.
+  // extra.url: send to this API URL instead of HA_CONFIG.API_URL.
+  function add(key, action, payload, session, extra) {
     if (items.some((it) => it.key === key)) return;
-    items.push({ key, rid: HA_API.newRid(), action, payload, session, status: 'pending', attempts: 0, result: null, error: null });
+    const e = extra || {};
+    items.push({ key, rid: HA_API.newRid(), action, payload, session, audioKey: e.audioKey || null, url: e.url || null,
+      status: 'pending', attempts: 0, result: null, error: null });
     save();
     kick();
   }
@@ -52,10 +57,17 @@
       let item;
       while ((item = items.find((it) => it.status === 'pending'))) {
         try {
-          item.result = await HA_API.call(item.action, item.payload, item.session, { rid: item.rid });
+          let payload = item.payload;
+          if (item.audioKey) {
+            const blob = await HA_AUDIO_STORE.get(item.audioKey);
+            if (!blob) throw Object.assign(new Error('Không tìm thấy bản ghi âm trên thiết bị.'), { code: 'AUDIO_MISSING' });
+            payload = Object.assign({}, payload, { audio_b64: await HA_AUDIO_STORE.toBase64(blob) });
+          }
+          item.result = await HA_API.call(item.action, payload, item.session, { rid: item.rid, url: item.url });
           item.status = 'done';
           item.error = null;
           save();
+          if (item.audioKey) HA_AUDIO_STORE.del(item.audioKey).catch(() => {});
         } catch (err) {
           item.attempts++;
           item.error = { code: err.code || 'ERROR', message: err.message };
