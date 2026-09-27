@@ -5,6 +5,13 @@
 
 var RASTER_IMAGE_TYPES = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp' };
 
+// What the CONTENT part of feedback_vi should talk about, per task type (owner, 2026-09-27).
+var CONTENT_FOCUS = {
+  picture_sentence: 'does the sentence match what the picture shows, and is it a natural thing to say about it',
+  email: 'did each required task come across, are the questions / suggestions / information relevant and explained, would the reader get what they need',
+  essay: 'is the opinion clear, are the reasons relevant and developed, are the examples specific and convincing, does the essay hold together from introduction to conclusion'
+};
+
 /**
  * opts: { temperature?, runs?, excludeAnchorId? } — the temperature test overrides these.
  */
@@ -86,7 +93,10 @@ function graderSystemText_(type, excludeAnchorId) {
     '- score: an integer from 0 to ' + MAX_SCORE[type] + '.',
     '- criteria: one entry per criterion listed below, with rating good / fair / weak and a short comment_vi.',
     '- errors: up to 8 of the most important language errors. quote = the exact words from the answer; correction = the corrected words; explanation_vi = a short explanation. Empty list if there are none.',
-    '- feedback_vi: 3 to 5 sentences addressed to the student as "bạn": what was done well, the most important things to improve, and one concrete tip. Do not mention the numeric score.',
+    '- feedback_vi: ' + (type === 'picture_sentence' ? '2 to 3' : '4 to 6') + ' sentences addressed to the student as "bạn", in this order: ' +
+      '(1) CONTENT — at least one sentence about the ideas themselves: ' + CONTENT_FOCUS[type] + '; ' +
+      '(2) LANGUAGE — grammar, vocabulary and sentence variety: what was done well and the most important things to fix; ' +
+      '(3) one concrete tip. Do not mention the numeric score.',
     '- band_note: one sentence for the teacher explaining why the answer is at this level and not the next level up.',
     '- Write all *_vi fields and band_note in Vietnamese with full diacritics. Keep English words and quotes from the answer in English.',
     '- SPELLING (Harry Academy rule): spelling mistakes and obvious typos where the intended word is clear (e.g. "affacted", "traffiic", "That" typed for "What") must NEVER be the reason for a lower score. Score the answer as if they were corrected; if that corrected answer deserves the higher level, give the higher level. Still list them in errors so the student can fix them, but band_note must not give spelling as the reason for not reaching the next level.',
