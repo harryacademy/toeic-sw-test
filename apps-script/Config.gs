@@ -25,7 +25,7 @@ var CONFIG = {
   SESSION_TTL_MINUTES: 180,
 
   // Temperature experiment (runTemperatureTest in TempTest.gs)
-  TEMP_TEST_TEMPERATURES: [1.0, 0.2],
+  TEMP_TEST_TEMPERATURES: [1.0],   // 0.2 gave identical results in three runs (2026-09-25..27)
   TEMP_TEST_RUNS: 3,
 
   // Sheet tab names
