@@ -1,0 +1,24 @@
+{
+  "form": "S-SAMPLE-01",
+  "out_dir": "docs/m/q7r2k9xw",
+  "items": [
+    { "file": "s5_context.mp3", "voice": "en-US-JennyNeural",
+      "text": "Imagine that a marketing company is doing research in your area. You have agreed to participate in a telephone interview about coffee shops." },
+    { "file": "s5.mp3", "voice": "en-GB-RyanNeural",
+      "text": "How often do you go to a coffee shop, and who do you usually go with?" },
+    { "file": "s6.mp3", "voice": "en-GB-RyanNeural",
+      "text": "What do you usually order at a coffee shop?" },
+    { "file": "s7.mp3", "voice": "en-GB-RyanNeural",
+      "text": "Would you rather study or work in a coffee shop or at home? Why?" },
+    { "file": "s8_intro.mp3", "voice": "en-US-GuyNeural",
+      "text": "Hi, this is Tom. I signed up for the photography workshop on Saturday, but I lost the schedule. Could you answer a few questions for me?" },
+    { "file": "s8.mp3", "voice": "en-US-GuyNeural",
+      "text": "What time does the workshop start, and where is it held?" },
+    { "file": "s9.mp3", "voice": "en-US-GuyNeural",
+      "text": "I heard there is a session on portrait photography in the morning. Is that right?" },
+    { "file": "s10.mp3", "voice": "en-US-GuyNeural",
+      "text": "I am most interested in the afternoon. Could you tell me about the sessions after lunch?" },
+    { "file": "s11.mp3", "voice": "en-GB-SoniaNeural",
+      "text": "Some people prefer to learn new skills from online videos, while others prefer to take classes with a teacher in person. Which do you prefer and why? Give specific reasons or examples to support your opinion." }
+  ]
+}

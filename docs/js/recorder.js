@@ -146,8 +146,56 @@
     return new Blob([buf], { type: 'audio/wav' });
   }
 
+  // ---------- playback (same AudioContext: iOS allows it once the context was started by a tap) ----------
+
+  // Downloads and decodes one prompt file. Returns an AudioBuffer.
+  async function load(url) {
+    if (!ctx) throw new Error('Micro chưa được bật.');
+    const res = await fetch(url, { cache: 'force-cache' });
+    if (!res.ok) throw new Error('Không tải được âm thanh đề bài (' + res.status + ').');
+    const data = await res.arrayBuffer();
+    // Older Safari only supports the callback form of decodeAudioData.
+    return new Promise((resolve, reject) => ctx.decodeAudioData(data, resolve, reject));
+  }
+
+  let current = null;
+
+  // Plays a decoded buffer; resolves when it ends (or when stopPlayback() is called).
+  function play(buffer) {
+    return new Promise((resolve) => {
+      if (ctx.state === 'suspended') ctx.resume();
+      const src = ctx.createBufferSource();
+      src.buffer = buffer;
+      src.connect(ctx.destination);
+      src.onended = () => { if (current === src) current = null; resolve(); };
+      current = src;
+      src.start();
+    });
+  }
+
+  function stopPlayback() {
+    if (current) { try { current.stop(); } catch (e) { /* already stopped */ } }
+    current = null;
+  }
+
+  // The test beep: 0.4 s at 1 kHz.
+  function beep() {
+    return new Promise((resolve) => {
+      if (ctx.state === 'suspended') ctx.resume();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.value = 1000;
+      gain.gain.value = 0.25;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.onended = resolve;
+      osc.start();
+      osc.stop(ctx.currentTime + 0.4);
+    });
+  }
+
   const api = {
-    init, start, stop, supported, onLevel: null,
+    init, start, stop, supported, load, play, stopPlayback, beep, onLevel: null,
     get ready() { return !!ctx; },
     get inputRate() { return ctx ? ctx.sampleRate : null; },
     get isRecording() { return recording; }

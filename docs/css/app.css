@@ -219,3 +219,20 @@ audio { width: 100%; margin-top: 12px; }
 .uploads { padding-left: 20px; margin: 0 0 12px; }
 .uploads li { margin: 8px 0; font-size: 15px; }
 .uploads .err { color: var(--danger); }
+
+/* ---------- speaking ---------- */
+.choice { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin: 0; display: grid; gap: 10px; }
+.choice legend { font-weight: 600; font-size: 15px; padding: 0 4px; }
+.phase { font-weight: 700; font-size: 17px; color: var(--accent-ink); margin-bottom: 10px; }
+.phase.is-rec { color: var(--danger); }
+.phase.is-rec::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--danger); margin-right: 8px; vertical-align: 1px; animation: blink 1s infinite; }
+@keyframes blink { 50% { opacity: .3; } }
+.read-text { font-size: 18px; line-height: 1.7; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+.context { font-style: italic; color: var(--ink-soft); }
+.info { border: 1px solid var(--line); border-radius: 8px; padding: 14px; background: var(--paper); }
+.info h3 { margin: 0 0 2px; font-size: 18px; }
+.info table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 15px; }
+.info td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: top; }
+.info td:first-child { white-space: nowrap; font-weight: 600; padding-right: 12px; }
+.section-title { font-family: var(--font-display); font-size: 24px; margin: 28px 0 8px; padding-top: 16px; border-top: 2px solid var(--accent); }
+.transcript { font-style: italic; color: var(--ink-soft); }

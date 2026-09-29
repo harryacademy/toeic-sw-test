@@ -20,7 +20,8 @@ function actions_() {
     getForm: actionGetForm_,
     submitAnswer: actionSubmitAnswer_,
     finishTest: actionFinishTest_,
-    uploadTestAudio: actionUploadTestAudio_
+    uploadTestAudio: actionUploadTestAudio_,
+    submitSpeaking: actionSubmitSpeaking_
   };
 }
 

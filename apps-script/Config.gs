@@ -15,8 +15,8 @@ var CONFIG = {
   DOUBLE_GRADE_TYPES: ['essay'],   // graded twice; scores differing by >= REVIEW_DIFF get a review flag
   REVIEW_DIFF: 1,
 
-  // Test forms: which form a new session gets (see Form*.gs)
-  ACTIVE_FORM: 'W-SAMPLE-01',
+  // Test forms: which form a new session gets for each section (see Form*.gs)
+  ACTIVE_FORMS: { speaking: 'S-SAMPLE-01', writing: 'W-SAMPLE-01' },
   // Public site; the server fetches raster images (png/jpg/webp) from here to show Gemini the picture
   PAGES_BASE_URL: 'https://harryacademy.github.io/toeic-sw-test/',
 

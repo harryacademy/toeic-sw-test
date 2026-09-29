@@ -8,7 +8,10 @@
  * Level descriptors are our own wording of the TOEIC Writing scoring guides; do not paste ETS text here.
  */
 
-var MAX_SCORE = { picture_sentence: 3, email: 4, essay: 5 };
+var MAX_SCORE = {
+  picture_sentence: 3, email: 4, essay: 5,                                                   // Writing
+  read_aloud: 3, describe_picture: 3, respond_questions: 3, respond_info: 3, opinion: 5       // Speaking
+};
 
 var RUBRICS = {
   picture_sentence: {

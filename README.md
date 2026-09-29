@@ -141,6 +141,19 @@ Cách hiệu chỉnh tốt nhất: cho học viên **đã có điểm ETS thật
 - **Kiểm tra thiết bị:** trang `<địa chỉ Pages>/mic.html` bật micro, ghi thử, nghe lại, và gửi thử một bản ghi 45 giây lên Drive (cần mã truy cập). Không chấm điểm.
 - Trang `mic.html` dùng máy chủ thử nghiệm (`DEV_API_URL` trong `docs/js/config.js`) nếu có, để không ảnh hưởng bản đang chạy cho học viên.
 
+## Speaking (Giai đoạn 2, đang phát triển)
+- **Xem trước:** mở `<địa chỉ Pages>/?preview=speaking`. Học viên vào link thường chỉ thấy Writing như trước.
+- Ở link xem trước, học viên chọn làm **Speaking, Writing hoặc cả hai** (cả hai thì Speaking trước).
+- Đề Speaking nằm trong `apps-script/FormSpeakingSample01.gs` (đề thật: `PrivateFormS….gs`). Đề đang dùng cho từng phần: `ACTIVE_FORMS` trong `Config.gs`.
+- **Tạo âm thanh đề bài (MP3)** bằng edge-tts, chạy tại thư mục gốc dự án:
+  ```
+  python tools/tts/make_audio.py tools/tts/speaking-sample-01.json
+  ```
+  File danh sách (`.json`) ghi nội dung, giọng đọc và tên file của từng câu. File đã có sẽ được bỏ qua; thêm `--force` để tạo lại. Với đề thật, sao chép file danh sách mẫu, sửa nội dung, rồi chạy lệnh trên với file mới.
+- Mỗi câu Speaking được ghi âm, lưu vào thư mục Drive ghi âm, và ghi vào tab `Results` (cột `audio_link`). Cột `review_flag`:
+  - `NOT_GRADED`: đã ghi âm, chưa chấm (chấm điểm có ở bước 2c);
+  - `NO_AUDIO`: mất bản ghi (ví dụ tải lại trang đúng lúc đang ghi âm).
+
 ## Tạo mã truy cập
 *(Hoàn thiện ở Giai đoạn 3.)*
 

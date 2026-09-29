@@ -7,7 +7,44 @@
 
 var SESSION_CACHE_SECONDS = 600;
 
-/** payload: { full_name, phone, consent, access_code } → { session_id, expires_at, form } */
+var SECTIONS = ['speaking', 'writing'];   // test order when a student takes both
+
+/** Chosen sections in test order. Older clients send none: they get Writing only. */
+function normalizeSections_(list) {
+  var chosen = Array.isArray(list) ? list : [];
+  var out = SECTIONS.filter(function (s) { return chosen.indexOf(s) >= 0; });
+  return out.length ? out : ['writing'];
+}
+
+/** The forms of a session, keyed by section. Sessions.form_id holds e.g. "S-SAMPLE-01,W-SAMPLE-01". */
+function sessionForms_(s) {
+  var forms = {};
+  String(s.form_id).split(',').forEach(function (id) {
+    var f = getForm_(id.trim());
+    forms[f.section] = f;
+  });
+  return forms;
+}
+
+function formForQuestion_(s, qid) {
+  var forms = sessionForms_(s);
+  for (var sec in forms) {
+    var found = findQuestion_(forms[sec], qid);
+    if (found) return { form: forms[sec], step: found.step, question: found.question };
+  }
+  return null;
+}
+
+function publicForms_(forms) {
+  var out = {};
+  Object.keys(forms).forEach(function (sec) { out[sec] = publicForm_(forms[sec]); });
+  return out;
+}
+
+/**
+ * payload: { full_name, phone, consent, access_code, sections? } →
+ *   { session_id, expires_at, sections, forms: { speaking?, writing? }, form (= writing, for older clients) }
+ */
 function actionStartSession_(payload) {
   var name = String(payload.full_name || '').replace(/\s+/g, ' ').trim();
   var phone = String(payload.phone || '').replace(/[\s.\-()]/g, '');
@@ -20,23 +57,28 @@ function actionStartSession_(payload) {
   var code = String(payload.access_code || '').trim();
   if (code.toUpperCase() !== expected.trim().toUpperCase()) throw new AppError('BAD_CODE', 'Mã truy cập không đúng.');
 
-  var form = getForm_(CONFIG.ACTIVE_FORM);
+  var sections = normalizeSections_(payload.sections);
+  var forms = {};
+  sections.forEach(function (sec) { forms[sec] = getForm_(CONFIG.ACTIVE_FORMS[sec]); });
+  var formIds = sections.map(function (sec) { return forms[sec].id; }).join(',');
   var now = new Date();
   var expires = new Date(now.getTime() + CONFIG.SESSION_TTL_MINUTES * 60000);
   var id = Utilities.getUuid();
   appendRow_(CONFIG.TABS.SESSIONS, {
     session_id: id, code: 'TEMP', full_name: name, phone: phone,
     consent_at: now, started_at: now, expires_at: expires,
-    form_id: form.id, status: 'started'
+    form_id: formIds, status: 'started'
   });
-  log_('startSession', id + ' ' + form.id);
-  return { session_id: id, expires_at: expires.toISOString(), form: publicForm_(form) };
+  log_('startSession', id + ' ' + formIds);
+  var pub = publicForms_(forms);
+  return { session_id: id, expires_at: expires.toISOString(), sections: sections, forms: pub, form: pub.writing || null };
 }
 
 /** Returns the form again (e.g. after the browser lost its saved copy). */
 function actionGetForm_(payload, req) {
   var s = requireSession_(req);
-  return { form: publicForm_(getForm_(s.form_id)) };
+  var pub = publicForms_(sessionForms_(s));
+  return { forms: pub, form: pub.writing || null };
 }
 
 /**
@@ -46,10 +88,10 @@ function actionGetForm_(payload, req) {
  */
 function actionSubmitAnswer_(payload, req) {
   var s = requireSession_(req);
-  var form = getForm_(s.form_id);
   var qid = String(payload.question_id || '');
-  var found = findQuestion_(form, qid);
-  if (!found) throw new AppError('INVALID', 'Unknown question: ' + qid);
+  var found = formForQuestion_(s, qid);
+  if (!found || found.form.section !== 'writing') throw new AppError('INVALID', 'Unknown question: ' + qid);
+  var form = found.form;
   var response = String(payload.response || '').slice(0, 20000);
 
   var existing = findRows_(CONFIG.TABS.RESULTS, 'session_id', s.session_id).filter(function (r) {
@@ -82,10 +124,15 @@ function actionSubmitAnswer_(payload, req) {
   return resultFromRow_(row);
 }
 
-/** Totals the section from the sheet (the source of truth) and closes the session. */
+/**
+ * payload: { section? } — totals one section from the sheet (the source of truth).
+ * The session is marked completed once every chosen section is finished.
+ */
 function actionFinishTest_(payload, req) {
   var s = requireSession_(req);
-  var form = getForm_(s.form_id);
+  var forms = sessionForms_(s);
+  var section = forms[payload.section] ? payload.section : (forms.writing ? 'writing' : Object.keys(forms)[0]);
+  var form = forms[section];
   var rows = {};
   findRows_(CONFIG.TABS.RESULTS, 'session_id', s.session_id).forEach(function (r) {
     rows[r.obj.question_id] = r.obj;
@@ -111,7 +158,8 @@ function actionFinishTest_(payload, req) {
         items.push(item);
         g.scores.push(item.ai_score);
       } else {
-        items.push({ question_id: q.id, type: step.type, ai_score: null, max_score: MAX_SCORE[step.type], missing: true });
+        items.push({ question_id: q.id, type: step.type, ai_score: null, max_score: MAX_SCORE[step.type], missing: true,
+          audio_link: r ? r.audio_link || '' : '', review_flag: r ? r.review_flag : '' });
         g.scores.push(null);
       }
     });
@@ -126,17 +174,23 @@ function actionFinishTest_(payload, req) {
   // e.g. "Q1-5 TB 2.4/3 | Q6-7 3, 2 /4 | Q8 3.5/5"
   var summary = groups.map(function (g) {
     var shown = g.scores.map(function (x) { return x === null ? '-' : x; });
-    return g.label + ' ' + (g.scores.length > 2 ? 'TB ' + g.avg + '/' + g.max : shown.join(', ') + ' /' + g.max);
+    return g.label + ' ' + (g.scores.length > 2 ? 'TB ' + (g.avg === null ? '-' : g.avg) + '/' + g.max : shown.join(', ') + ' /' + g.max);
   }).join(' | ');
 
-  var estimate = estimateScaled_(groups, loadScoreMap_(form.section));
+  var estimate = estimateScaled_(groups, tryLoadScoreMap_(form.section));
   var estimateText = estimate
     ? estimate.low + '-' + estimate.high + ' (Level ' + estimate.level + ') | ' + estimate.score + ' | weighted ' + estimate.weighted
     : '';
 
-  var update = { completed_at: new Date(), status: 'completed' };
+  var update = {};
   update[form.section + '_raw'] = summary;
   update[form.section + '_estimate'] = estimateText;
+  var fresh = findRows_(CONFIG.TABS.SESSIONS, 'session_id', s.session_id)[0];
+  var allDone = Object.keys(forms).every(function (sec) {
+    return sec === section || (fresh && String(fresh.obj[sec + '_raw']) !== '');
+  });
+  update.status = allDone ? 'completed' : section + ' done';
+  if (allDone) update.completed_at = new Date();
   updateCells_(CONFIG.TABS.SESSIONS, s.row, update);
   log_('finishTest', s.session_id + ' ' + summary + ' | ' + estimateText);
   return { section: form.section, groups: groups, items: items, estimate: estimate };
@@ -151,7 +205,9 @@ function resultFromRow_(r) {
     errors: parseJson_(r.errors, []),
     feedback_vi: r.feedback_vi,
     band_note: r.band_note,
-    review_flag: r.review_flag
+    review_flag: r.review_flag,
+    audio_link: r.audio_link || '',
+    transcript: r.section === 'speaking' ? r.response : undefined
   };
 }
 

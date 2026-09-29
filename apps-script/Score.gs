@@ -67,11 +67,21 @@ function loadScoreMap_(section) {
   return map;
 }
 
+/** Like loadScoreMap_, but returns null when the section has no table yet (e.g. Speaking before Phase 2d). */
+function tryLoadScoreMap_(section) {
+  try {
+    return loadScoreMap_(section);
+  } catch (e) {
+    return null;
+  }
+}
+
 /**
  * groups: [{ type, scores: [number|null], max }] from finishTest. Unanswered/ungraded questions count as 0.
  * Returns { weighted, score, low, high, level } or null when the map does not cover these types.
  */
 function estimateScaled_(groups, map) {
+  if (!map) return null;
   var weighted = 0, total = 0;
   groups.forEach(function (g) {
     var w = map.weights[g.type];
